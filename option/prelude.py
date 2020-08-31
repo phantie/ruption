@@ -1,4 +1,5 @@
 from option import Option
+from option import OptionType
 from option import some
 from option import none
 

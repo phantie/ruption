@@ -18,7 +18,7 @@ from copy import deepcopy
 from typing import NewType, Callable, Any, Iterable
 from option.exceptions import *
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 E = NewType('E', Exception) # error
 P = NewType('P', Callable) # predicate
@@ -32,7 +32,7 @@ def instancer(cls):
 class Option:
     def __new__(cls, value):
         return cls.into(value)
-        
+
 
     @classmethod
     def into(cls, value):
