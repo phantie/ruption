@@ -16,11 +16,11 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import NewType, Callable, Any, Iterable
-from rust_option.exceptions import *
+from option.exceptions import *
 
-E = NewType('E', Exception)
-T = NewType('T', Any)
-P = NewType('P', Callable)
+E = NewType('E', Exception) # error
+P = NewType('P', Callable) # predicate
+T = NewType('T', Any) # T-Dog
 OptionType = \
     NewType('OptionType', T)
 
@@ -354,4 +354,3 @@ class Option:
             return self
 
 some, none = Option.some, Option.none
-

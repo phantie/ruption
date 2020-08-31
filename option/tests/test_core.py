@@ -1,7 +1,6 @@
 import pytest
 
-from rust_option import Option, some, none
-from rust_option.exceptions import *
+from option.prelude import *
 
 def test_option_none_raises_option_ValueIsNone_if_unwrap():
     with pytest.raises(ValueIsNone):
