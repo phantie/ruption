@@ -14,13 +14,12 @@ from abc import ABC, abstractmethod
 def instancer(cls):
     return cls()
 
-
-
-class ValueIsNone(Exception):
-    pass
-
 class Option:
-    # to get linter help better solution is:
+
+    class ValueIsNone(Exception):
+        pass
+
+    # to make the variables global run either this, or:
     # some, none = Option.some, Option.none
     @classmethod
     def expose(cls) -> None:
@@ -130,7 +129,7 @@ class Option:
             return str(self)
 
         def unwrap(self):
-            raise ValueIsNone
+            raise Option.ValueIsNone
 
         def unwrap_or(self, another):
             return another

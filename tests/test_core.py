@@ -1,18 +1,18 @@
 import pytest
 
-from rust_option import Option, ValueIsNone
+from rust_option import Option
 
 some, none = Option.some, Option.none
 
-def test_option_none_raises_ValueIsNone_if_unwrap():
-    with pytest.raises(ValueIsNone):
+def test_option_none_raises_option_ValueIsNone_if_unwrap():
+    with pytest.raises(Option.ValueIsNone):
         none.unwrap()
 
 def test_unwrap_of_some_number_returns_the_number():
     assert some(42).unwrap() == 42
 
 def test_some_is_not_none():
-    assert not some(None).is_none()
+    assert not some('one').is_none()
 
 def test_option_none_is_equal_to_None():
     assert none == None
@@ -25,7 +25,7 @@ def test_unwrap_or_returns_other_if_target_is_option_none():
     assert none.unwrap_or(other) == other
 
 def test_converts_python_None_into_option_none():
-    assert Option.into(None) == none
+    assert Option.into(None) is none
 
 def test_option_into_returns_option_some_if_arg_is_not_None():
     assert isinstance(Option.into(13), Option.some)
@@ -46,7 +46,7 @@ def test_option_none_is_what_it_is():
 def test_unwrap_or_else_executes_function_on_option_none():
     assert none.unwrap_or_else(lambda: 42) == 42
 
-def test_map_on_none_does_nothing():
+def test_map_on_none_returns_self():
     assert none.map(lambda x: x**2) == none
 
 def test_map_on_some_transforms_some():
