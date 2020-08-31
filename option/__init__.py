@@ -18,6 +18,8 @@ from copy import deepcopy
 from typing import NewType, Callable, Any, Iterable
 from option.exceptions import *
 
+__version__ = '0.6.0'
+
 E = NewType('E', Exception) # error
 P = NewType('P', Callable) # predicate
 T = NewType('T', Any) # T-Dog
@@ -30,16 +32,16 @@ def instancer(cls):
 class Option:
     def __new__(cls, value):
         return cls.into(value)
+        
 
-    # wraps/converts any type to Option. None becomes Option.none, Other becomes Option.some(Other)
     @classmethod
     def into(cls, value):
-        if value is None or value is none:
-            return cls.none
-        elif isinstance(value, some):
+        if value is None:
+            return none
+        elif isinstance(value, some) or value is none:
             return value
         else:
-            return cls.some(value)
+            return some(value)
 
     class OptionInterface(ABC):
         @abstractmethod
