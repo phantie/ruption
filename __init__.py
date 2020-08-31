@@ -6,10 +6,12 @@
 
     Methods renamed for the same reason:
         and: also
+        or: otherwise
 
 """
 
 from abc import ABC, abstractmethod
+
 
 def instancer(cls):
     return cls()
@@ -19,11 +21,6 @@ class Option:
     class ValueIsNone(Exception):
         pass
 
-    # to make the variables global run either this, or:
-    # some, none = Option.some, Option.none
-    @classmethod
-    def expose(cls) -> None:
-        globals().update(dict(some = cls.some, none = cls.none))
 
     # wraps/converts any type to Option. None becomes Option.none, Other becomes Option.some(Other)
     @classmethod
@@ -70,13 +67,27 @@ class Option:
         @abstractmethod
         def also(self): ...
 
+        @abstractmethod
+        def and_then(self, f: callable): ...
+
+        @abstractmethod
+        def filter(self, P: callable): ...
+
+        @abstractmethod
+        def otherwise(self, another): ...
+        
+        @abstractmethod
+        def or_else(self, f: callable): ...
+
+        @abstractmethod
+        def xor(self, optb): ...
 
     class some(OptionInterface):
         def __init__(self, T):
             self.T = T
 
         def __str__(self):
-            return f'Option.some({self.T})'
+            return f'Option.some({repr(self.T)})'
 
         def __repr__(self):
             return str(self)
@@ -119,6 +130,32 @@ class Option:
 
         def also(self, another):
             return another
+
+        def and_then(self, f):
+            self.T = f(self.T)
+            if self.T is none:
+                return none
+
+            return self
+
+        def filter(self, P):
+            if P(self.T):
+                return self
+            else:
+                return none
+
+        def otherwise(self, another):
+            return self
+
+        def or_else(self, f):
+            return self
+
+        def xor(self, optb):
+            if optb is none:
+                return self
+            else:
+                return none
+
 
     @instancer
     class none(OptionInterface):
@@ -165,3 +202,23 @@ class Option:
 
         def also(self, another):
             return self
+
+        def and_then(self, f):
+            return self
+
+        def filter(self, P):
+            return self
+
+        def otherwise(self, another):
+            return another
+
+        def or_else(self, f):
+            return f()
+
+        def xor(self, optb):
+            if optb is not self:
+                return optb
+            else:
+                return self
+
+some, none = Option.some, Option.none

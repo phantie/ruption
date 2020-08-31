@@ -1,8 +1,6 @@
 import pytest
 
-from rust_option import Option
-
-some, none = Option.some, Option.none
+from rust_option import Option, some, none
 
 def test_option_none_raises_option_ValueIsNone_if_unwrap():
     with pytest.raises(Option.ValueIsNone):
@@ -70,15 +68,60 @@ def test_map_or_else_on_none_executes_function_that_changes_state():
 
 def test_raises_StopIteration_after_executing_next_twice():
     iterator1 = none.iter()
-    next(iterator1)
+    assert next(iterator1) is none
     with pytest.raises(StopIteration):
         next(iterator1)
 
     iterator2 = some(12).iter()
-    next(iterator2)
+    assert next(iterator2) == 12
     with pytest.raises(StopIteration):
         next(iterator2)
 
 def test_iter_on_some():
     iterator = some([1, 2 ,3]).iter()
     assert next(iterator) == [1, 2, 3]
+
+def test_and_then():
+    square = lambda x: x**2
+
+    assert some(2).and_then(square).and_then(square) == some(16)
+    assert some(13).and_then(lambda self: none) is none
+    assert some(33).and_then(lambda self: none).and_then(square) is none
+    assert none.and_then(lambda x: x**2) is none
+
+def test_filter():
+    not_zero = lambda n: n!=0
+
+    assert none.filter(not_zero) is none
+    assert some(0).filter(not_zero) is none
+    assert some(96).filter(not_zero).filter(lambda n: n == 96) == some(96)
+    assert some(96).filter(not_zero).filter(lambda n: n > 101) is none
+
+def test_otherwise():
+    a, b = some(3), none
+
+    assert a.otherwise(b) == a
+    assert b.otherwise(a) == a
+    assert a.otherwise(some(4)) == a
+    assert b.otherwise(b) is b
+
+def test_or_else():
+    nobody = lambda: none
+    vikings = lambda: some('vikings')
+
+    assert some('barbarians').or_else(vikings) == some('barbarians')
+    assert none.or_else(vikings) == some('vikings')
+    assert none.or_else(nobody) is none
+
+def test_xor():
+    x, y = some(2), none
+    assert x.xor(y) == some(2)
+
+    x, y = none, some(2)
+    assert x.xor(y) == some(2)
+
+    x = y = some(2)
+    assert x.xor(y) is none
+
+    x = y = none
+    assert x.xor(y) is none
