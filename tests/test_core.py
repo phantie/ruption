@@ -13,8 +13,8 @@ def test_unwrap_of_some_variable_returns_the_variable():
 def test_some_is_not_none():
     assert not some('one').is_none()
 
-def test_option_none_is_equal_to_None():
-    assert none == None
+def test_option_none_not_equal_to_None():
+    assert none != None
 
 def test_option_none_equals_to_self():
     assert none == none
@@ -210,4 +210,5 @@ def test_flatten():
 def test_option_new():
     assert Option(None) is none
     assert Option(12) == some(12)
-    assert Option(none) == some(none)
+    assert Option(none) is none
+    assert Option(some(3)) == some(3)

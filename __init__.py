@@ -34,8 +34,10 @@ class Option:
     # wraps/converts any type to Option. None becomes Option.none, Other becomes Option.some(Other)
     @classmethod
     def into(cls, value):
-        if value is None:
+        if value is None or value is none:
             return cls.none
+        elif isinstance(value, some):
+            return value
         else:
             return cls.some(value)
 
@@ -71,8 +73,7 @@ class Option:
 
         @abstractmethod
         def iter(self) -> Iterable: ...
-
-        # 'and' is a reserved word. so it use 'also' instead
+        
         @abstractmethod
         def also(self): ...
 
@@ -285,7 +286,7 @@ class Option:
             return False
 
         def __eq__(self, another):
-            return another is None or self is another
+            return self is another
 
         def unwrap_or_else(self, f):
             return f()
