@@ -1,12 +1,13 @@
 import pytest
 
 from rust_option import Option, some, none
+from rust_option.exceptions import *
 
 def test_option_none_raises_option_ValueIsNone_if_unwrap():
-    with pytest.raises(Option.ValueIsNone):
+    with pytest.raises(ValueIsNone):
         none.unwrap()
 
-def test_unwrap_of_some_number_returns_the_number():
+def test_unwrap_of_some_variable_returns_the_variable():
     assert some(42).unwrap() == 42
 
 def test_some_is_not_none():
@@ -182,13 +183,13 @@ def test_cloned():
     assert none.copied() is none
 
 def test_expect_none():
-    with pytest.raises(Option.noneIsExpected):
+    with pytest.raises(noneIsExpected):
         some(1).expect_none()
 
     assert none.expect_none() is None
 
 def test_unwrap_none():
-    with pytest.raises(Option.noneIsExpected):
+    with pytest.raises(noneIsExpected):
         some(1).unwrap_none()
 
     assert none.unwrap_none() is none
@@ -204,3 +205,9 @@ def test_flatten():
     assert some(1) == some(some(some(1))).flatten().flatten()
     assert none is some(none).flatten()
     assert none is none.flatten()
+
+
+def test_option_new():
+    assert Option(None) is none
+    assert Option(12) == some(12)
+    assert Option(none) == some(none)

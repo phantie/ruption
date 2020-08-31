@@ -16,22 +16,20 @@
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from typing import NewType, Callable, Any, Iterable
+from rust_option.exceptions import *
 
 E = NewType('E', Exception)
 T = NewType('T', Any)
 P = NewType('P', Callable)
-OptionType = NewType('OptionType', T)
+OptionType = \
+    NewType('OptionType', T)
 
 def instancer(cls):
     return cls()
 
 class Option:
-
-    class ValueIsNone(Exception): ...
-
-    class InvalidArgument(Exception): ...
-
-    class noneIsExpected(Exception): ...
+    def __new__(cls, value):
+        return cls.into(value)
 
     # wraps/converts any type to Option. None becomes Option.none, Other becomes Option.some(Other)
     @classmethod
@@ -99,9 +97,6 @@ class Option:
         @abstractmethod
         def get_or_insert_with(self, f: Callable[[], Any]) : ...
 
-        # @abstractmethod
-        # def take(self): ...
-
         @abstractmethod
         def zip(self, another: OptionType): ...
 
@@ -126,14 +121,32 @@ class Option:
         @abstractmethod
         def flatten(self): ...
 
+
+
         def as_ref(self): ...
 
         def as_mut(self): ...
 
         def ok_or(self, err: E): ...
-    
+
+        def ok_or_else(self, err: Callable[[], Any]): ...
+
+        def iter_mut(self): ...
+
+        def take(self): ...
+
+        def replace(self, value: T): ...
+
+        def as_deref(self): ...
+
+        def as_deref_mut(self): ...
+        
+        def transpose(self): ...
+
+
+
     class some(OptionInterface):
-        def __init__(self, T):
+        def __init__(self, T: T):
             self.T = T
 
         def __str__(self):
@@ -212,11 +225,6 @@ class Option:
         def get_or_insert_with(self, f):
             return self
 
-        # def take(self):
-        #     self_copy = some(self.T)
-        #     self = none
-        #     return self_copy
-
         def zip(self, another):
             if isinstance(another, some):
                 self.T = (self.T, another.T)
@@ -240,7 +248,7 @@ class Option:
             return deepcopy(self)
 
         def expect_none(self):
-            raise Option.noneIsExpected('actual value is ' + str(self))
+            raise noneIsExpected('actual value is ' + str(self))
 
         def unwrap_none(self): 
             raise self.expect_none()
@@ -260,7 +268,7 @@ class Option:
             return str(self)
 
         def unwrap(self):
-            raise Option.ValueIsNone
+            raise ValueIsNone
 
         def unwrap_or(self, another):
             return another
@@ -320,9 +328,6 @@ class Option:
 
         def get_or_insert_with(self, f):
             return some(f())
-
-        # def take(self):
-        #     return self
 
         def zip(self, another):
             return self
