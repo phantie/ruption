@@ -125,3 +125,82 @@ def test_xor():
 
     x = y = none
     assert x.xor(y) is none
+
+def test_get_or_insert():
+    x = none
+    assert x.get_or_insert(5) == some(5)
+
+    y = some('value')
+    assert y.get_or_insert('ion') == some('value')
+
+def test_get_or_insert_with():
+    assert none.get_or_insert_with(lambda: 13) == some(13)
+    assert some(5).get_or_insert_with(lambda: 13) == some(5)
+
+@pytest.mark.skip('not implemented yet')
+def test_take():
+    x = some(12)
+    y = x.take()
+
+    assert x is none
+    assert y == some(12)
+
+def test_zip():
+    x = some(1)
+    y = some('hey')
+    z = none
+
+    assert x.zip(y) == some((1, 'hey'))
+    assert x.zip(z) is none
+    assert z.zip(z) is none
+
+
+def test_zip_with():
+    def area(a, b):
+        return a*b
+
+    x = some(10)
+    y = some(15)
+
+    assert x.zip_with(y, area) == some(150)
+    assert x.zip_with(none, area) is none
+
+def test_copied():
+    x = some('num')
+    y = x.copied()
+    assert not x is y
+
+    # there`s no point in actual copy of none. so it`s ommitted.
+    assert none.copied() is none
+
+def test_cloned():
+    x = some('num')
+    y = x.cloned()
+    assert not x is y
+
+    # there`s no point in cloning the none
+    assert none.copied() is none
+
+def test_expect_none():
+    with pytest.raises(Option.noneIsExpected):
+        some(1).expect_none()
+
+    assert none.expect_none() is None
+
+def test_unwrap_none():
+    with pytest.raises(Option.noneIsExpected):
+        some(1).unwrap_none()
+
+    assert none.unwrap_none() is none
+
+def test_unwrap_or_default():
+    assert some(1).unwrap_or_default(int) == 1
+    assert none.unwrap_or_default(int) == 0
+    assert none.unwrap_or_default(list) == []
+
+def test_flatten():
+    assert some(1) == some(some(1)).flatten()
+    assert 1 == some(some(1)).flatten().flatten()
+    assert some(1) == some(some(some(1))).flatten().flatten()
+    assert none is some(none).flatten()
+    assert none is none.flatten()

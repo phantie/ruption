@@ -8,19 +8,24 @@
         and: also
         or: otherwise
 
+    Changed func. signatures:
+        unwrap_or_default: added 'type' argument considering python cannot infer type.
+
 """
 
 from abc import ABC, abstractmethod
-
+from copy import deepcopy
 
 def instancer(cls):
     return cls()
 
 class Option:
 
-    class ValueIsNone(Exception):
-        pass
+    class ValueIsNone(Exception): ...
 
+    class InvalidArgument(Exception): ...
+
+    class noneIsExpected(Exception): ...
 
     # wraps/converts any type to Option. None becomes Option.none, Other becomes Option.some(Other)
     @classmethod
@@ -82,6 +87,40 @@ class Option:
         @abstractmethod
         def xor(self, optb): ...
 
+        @abstractmethod
+        def get_or_insert(self, value): ...
+        
+        @abstractmethod
+        def get_or_insert_with(self, f: callable): ...
+
+        # @abstractmethod
+        # def take(self): ...
+
+        @abstractmethod
+        def zip(self, another): ...
+
+        @abstractmethod
+        def zip_with(self, another, f: callable): ...
+
+        @abstractmethod
+        def copied(self): ...
+
+        @abstractmethod
+        def cloned(self): ...
+
+        @abstractmethod
+        def expect_none(self): ...
+
+        @abstractmethod
+        def unwrap_none(self): ...
+
+        @abstractmethod
+        def unwrap_or_default(self, type): ...
+
+        @abstractmethod
+        def flatten(self): ...
+
+    
     class some(OptionInterface):
         def __init__(self, T):
             self.T = T
@@ -156,6 +195,50 @@ class Option:
             else:
                 return none
 
+        def get_or_insert(self, value):
+            return self
+
+        def get_or_insert_with(self, f):
+            return self
+
+        # def take(self):
+        #     self_copy = some(self.T)
+        #     self = none
+        #     return self_copy
+
+        def zip(self, another):
+            if isinstance(another, some):
+                self.T = (self.T, another.T)
+                return self
+            else:
+                return none
+
+        def zip_with(self, another, f):
+            if isinstance(another, some):
+                self.T = f(self.T, another.T)
+                return self
+            else:
+                return none
+
+        def copied(self):
+            return some(self.T)
+
+        # basically the same behaviour 
+        # as you get from copied. but slower.
+        def cloned(self):
+            return deepcopy(self)
+
+        def expect_none(self):
+            raise Option.noneIsExpected('actual value is ' + str(self))
+
+        def unwrap_none(self): 
+            raise self.expect_none()
+
+        def unwrap_or_default(self, type):
+            return self.unwrap()
+
+        def flatten(self):
+            return self.T
 
     @instancer
     class none(OptionInterface):
@@ -221,4 +304,37 @@ class Option:
             else:
                 return self
 
+        def get_or_insert(self, value):
+            return some(value)
+
+        def get_or_insert_with(self, f):
+            return some(f())
+
+        # def take(self):
+        #     return self
+
+        def zip(self, another):
+            return self
+
+        def zip_with(self, another, f):
+            return self
+
+        def copied(self):
+            return self
+
+        def cloned(self):
+            return self
+
+        def expect_none(self): ...
+
+        def unwrap_none(self):
+            return self
+
+        def unwrap_or_default(self, type):
+            return type()
+
+        def flatten(self):
+            return self
+
 some, none = Option.some, Option.none
+
