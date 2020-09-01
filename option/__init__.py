@@ -1,6 +1,7 @@
-""" An attempt to copy official Rust Option API. https://doc.rust-lang.org/std/option/enum.Option.html
+""" Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html
+    A step towards writing more reliable sofware in python.
 
-    Methods not suitable for python, for ex. whose deal with pointers, refs, etc are not implemented.
+    Methods not suitable for python, for ex. whose which deal with pointers, refs, etc are not implemented.
 
     Because None is a reserved word, "Some and None" became "some and none".
 
@@ -11,18 +12,19 @@
     Changed func. signatures:
         unwrap_or_default: added 'type' argument considering python cannot infer type.
 
+    Preferred usage:
+    from option.prelude import *
 """
 
 from abc import ABC, abstractmethod
-from copy import deepcopy
 from typing import NewType, Callable, Any, Iterable
 from option.exceptions import *
 
-__version__ = '0.6.1'
+__version__ = '1.0'
 
 E = NewType('E', Exception) # error
-P = NewType('P', Callable) # predicate
-T = NewType('T', Any) # T-Dog
+P = NewType('P', Callable)  # predicate
+T = NewType('T', Any)       # T-Dog
 OptionType = \
     NewType('OptionType', T)
 
@@ -95,12 +97,6 @@ class Option:
         def xor(self, optb: OptionType): ...
 
         @abstractmethod
-        def get_or_insert(self, value: T) -> Any: ...
-        
-        @abstractmethod
-        def get_or_insert_with(self, f: Callable[[], Any]) : ...
-
-        @abstractmethod
         def zip(self, another: OptionType): ...
 
         @abstractmethod
@@ -123,29 +119,6 @@ class Option:
 
         @abstractmethod
         def flatten(self): ...
-
-
-
-        def as_ref(self): ...
-
-        def as_mut(self): ...
-
-        def ok_or(self, err: E): ...
-
-        def ok_or_else(self, err: Callable[[], Any]): ...
-
-        def iter_mut(self): ...
-
-        def take(self): ...
-
-        def replace(self, value: T): ...
-
-        def as_deref(self): ...
-
-        def as_deref_mut(self): ...
-        
-        def transpose(self): ...
-
 
 
     class some(OptionInterface):
@@ -222,11 +195,6 @@ class Option:
             else:
                 return none
 
-        def get_or_insert(self, value):
-            return self
-
-        def get_or_insert_with(self, f):
-            return self
 
         def zip(self, another):
             if isinstance(another, some):
@@ -245,10 +213,8 @@ class Option:
         def copied(self):
             return some(self.T)
 
-        # basically the same behaviour 
-        # as you get from copied. but slower.
         def cloned(self):
-            return deepcopy(self)
+            return self.copied()
 
         def expect_none(self):
             raise noneIsExpected('actual value is ' + str(self))
@@ -325,12 +291,6 @@ class Option:
                 return optb
             else:
                 return self
-
-        def get_or_insert(self, value):
-            return some(value)
-
-        def get_or_insert_with(self, f):
-            return some(f())
 
         def zip(self, another):
             return self

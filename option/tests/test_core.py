@@ -126,24 +126,6 @@ def test_xor():
     x = y = none
     assert x.xor(y) is none
 
-def test_get_or_insert():
-    x = none
-    assert x.get_or_insert(5) == some(5)
-
-    y = some('value')
-    assert y.get_or_insert('ion') == some('value')
-
-def test_get_or_insert_with():
-    assert none.get_or_insert_with(lambda: 13) == some(13)
-    assert some(5).get_or_insert_with(lambda: 13) == some(5)
-
-@pytest.mark.skip('not implemented yet')
-def test_take():
-    x = some(12)
-    y = x.take()
-
-    assert x is none
-    assert y == some(12)
 
 def test_zip():
     x = some(1)
@@ -173,13 +155,6 @@ def test_copied():
     # there`s no point in actual copy of none. so it`s ommitted.
     assert none.copied() is none
 
-def test_cloned():
-    x = some('num')
-    y = x.cloned()
-    assert not x is y
-
-    # there`s no point in cloning the none
-    assert none.copied() is none
 
 def test_expect_none():
     with pytest.raises(noneIsExpected):
