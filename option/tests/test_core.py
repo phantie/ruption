@@ -105,6 +105,14 @@ def test_otherwise():
     assert a.otherwise(some(4)) == a
     assert b.otherwise(b) is b
 
+def test__or():
+    a, b = some(3), none
+
+    assert a._or(b) == a
+    assert b._or(a) == a
+    assert a._or(some(4)) == a
+    assert b._or(b) is b
+
 def test_or_else():
     nobody = lambda: none
     vikings = lambda: some('vikings')
@@ -136,6 +144,17 @@ def test_zip():
     assert x.zip(z) is none
     assert z.zip(z) is none
 
+def test_zip_advanced():
+    x = some(1)
+    y = some('hey')
+    z = none
+
+    assert x.zip(y, z, x) is none
+    assert x.zip(y, y) == some((1, 'hey', 'hey'))
+    assert x.zip(x, x, x, x) == some((1, 1, 1, 1, 1))
+
+    with pytest.raises(TypeError):
+        x.zip() == some((1,))
 
 def test_zip_with():
     def area(a, b):
@@ -143,9 +162,16 @@ def test_zip_with():
 
     x = some(10)
     y = some(15)
+    z = some(5)
 
-    assert x.zip_with(y, area) == some(150)
-    assert x.zip_with(none, area) is none
+    assert x.zip_with(y, f = area) == some(150)
+    assert x.zip_with(y, z, f = lambda x, y, z: x - y + z ) == some(0)
+    assert x.zip_with(none, x, f = area) is none
+
+    assert none.zip_with(y, y, f = area) is none
+
+    with pytest.raises(TypeError):
+        x.zip_with()
 
 def test_copied():
     x = some('num')
@@ -186,3 +212,43 @@ def test_option_new():
     assert Option(12) == some(12)
     assert Option(none) is none
     assert Option(some(3)) == some(3)
+
+def test_also():
+    x = some(2)
+    y = none
+
+    assert x.also(y) is none
+
+    x = none
+    y = some('foo')
+
+    assert x.also(y) is none
+
+    x = some(2)
+    y = some(3)
+
+    assert x.also(y) == some(3)
+
+    x = y = none
+
+    assert x.also(y) is none
+
+def test__and():
+    x = some(2)
+    y = none
+
+    assert x._and(y) is none
+
+    x = none
+    y = some('foo')
+
+    assert x._and(y) is none
+
+    x = some(2)
+    y = some(3)
+
+    assert x._and(y) == some(3)
+
+    x = y = none
+
+    assert x._and(y) is none

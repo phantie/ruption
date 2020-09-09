@@ -6,11 +6,13 @@
     Because None is a reserved word, "Some and None" became "some and none".
 
     Methods renamed for the same reason:
-        and: also
-        or: otherwise
+        and: also / _and
+        or: otherwise / _or
 
     Changed func. signatures:
-        unwrap_or_default: added 'type' argument considering python cannot infer type.
+        unwrap_or_default: added 'type' argument considering python cannot infer type
+        zip: not one required argument but unlimited amount of arguments
+        zip_with: unlimited amount of positional arguments, and required kwonly argument 'f'
 
     Preferred usage:
     from option.prelude import *
@@ -79,7 +81,10 @@ class Option:
         def iter(self) -> Iterable: ...
         
         @abstractmethod
-        def also(self): ...
+        def also(self, another): ...
+
+        def _and(self, another):
+            return self.also(another)
 
         @abstractmethod
         def and_then(self, f: Callable[[T], Any]): ...
@@ -89,6 +94,9 @@ class Option:
 
         @abstractmethod
         def otherwise(self, another: OptionType): ...
+
+        def _or(self, another: OptionType):
+            return self.otherwise(another)
         
         @abstractmethod
         def or_else(self, f: Callable[[], Any]): ...
@@ -196,19 +204,30 @@ class Option:
                 return none
 
 
-        def zip(self, another):
-            if isinstance(another, some):
-                self.T = (self.T, another.T)
-                return self
-            else:
+        def zip(self, *others):
+            if len(others) < 1:
+                raise TypeError
+
+            if any(el is none for el in others):
                 return none
 
-        def zip_with(self, another, f):
-            if isinstance(another, some):
-                self.T = f(self.T, another.T)
-                return self
-            else:
+            if any(not isinstance(el, some) for el in others):
+                raise TypeError('cannot zip non Option types')
+
+            return some((self.T, *(el.T for el in others )))
+
+
+        def zip_with(self, *others, f=None):
+            if len(others) < 1 or f is None:
+                raise TypeError
+
+            if any(el is none for el in others):
                 return none
+
+            if any(not isinstance(el, some) for el in others):
+                raise TypeError('cannot zip non Option types')
+
+            return some(f(self.T, *(el.T for el in others )))
 
         def copied(self):
             return some(self.T)
@@ -292,10 +311,10 @@ class Option:
             else:
                 return self
 
-        def zip(self, another):
+        def zip(self, *others):
             return self
 
-        def zip_with(self, another, f):
+        def zip_with(self, *others, f=None):
             return self
 
         def copied(self):
