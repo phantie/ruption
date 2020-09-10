@@ -2,8 +2,8 @@ import pytest
 
 from option.prelude import *
 
-def test_option_none_raises_option_ValueIsNone_if_unwrap():
-    with pytest.raises(ValueIsNone):
+def test_option_none_raises_option_noneValue_if_unwrap():
+    with pytest.raises(noneValue):
         none.unwrap()
 
 def test_unwrap_of_some_variable_returns_the_variable():
@@ -252,3 +252,11 @@ def test__and():
     x = y = none
 
     assert x._and(y) is none
+
+def test_expect():
+    assert some(1).expect('cannot fail') == 1
+
+    with pytest.raises(noneValue) as err:
+        none.expect('definitely will not fail')
+
+    assert str(err.value) == 'definitely will not fail'

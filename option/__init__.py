@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod
 from typing import NewType, Callable, Any, Iterable
 from option.exceptions import *
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 E = NewType('E', Exception) # error
 P = NewType('P', Callable)  # predicate
@@ -115,6 +115,9 @@ class Option:
 
         @abstractmethod
         def cloned(self): ...
+
+        @abstractmethod
+        def expect(self, msg: str): ...
 
         @abstractmethod
         def expect_none(self): ...
@@ -235,6 +238,9 @@ class Option:
         def cloned(self):
             return self.copied()
 
+        def expect(self, msg):
+            return self.T
+
         def expect_none(self):
             raise noneIsExpected('actual value is ' + str(self))
 
@@ -256,7 +262,7 @@ class Option:
             return str(self)
 
         def unwrap(self):
-            raise ValueIsNone
+            raise noneValue
 
         def unwrap_or(self, another):
             return another
@@ -322,6 +328,9 @@ class Option:
 
         def cloned(self):
             return self
+
+        def expect(self, msg):
+            raise noneValue(msg)
 
         def expect_none(self): ...
 
