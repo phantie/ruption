@@ -1,4 +1,4 @@
-""" Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html
+""" Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html .
     A step towards writing more reliable sofware in python.
 
     Methods not suitable for python, for ex. whose which deal with pointers, refs, etc are not implemented.
@@ -11,7 +11,7 @@
 
     Changed func. signatures:
         unwrap_or_default: added 'type' argument considering python cannot infer type
-        zip: not one required argument but unlimited amount of arguments
+        zip: unlimited amount of positional arguments available
         zip_with: unlimited amount of positional arguments, and required kwonly argument 'f'
 
     Preferred usage:
@@ -166,8 +166,7 @@ class Option:
             return self.unwrap()
 
         def map(self, f):
-            self.T = f(self.T)
-            return self
+            return some(f(self.T))
 
         def map_or(self, default, f):
             return self.map(f)
@@ -182,11 +181,11 @@ class Option:
             return another
 
         def and_then(self, f):
-            self.T = f(self.T)
-            if self.T is none:
+            res = f(self.T)
+            if res is none:
                 return none
 
-            return self
+            return some(res)
 
         def filter(self, P):
             if P(self.T):
