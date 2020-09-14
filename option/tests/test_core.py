@@ -262,22 +262,6 @@ def test_expect():
     assert str(err.value) == 'definitely will not fail'
 
 
-# def test_relations():
-#     assert isinstance(none, Option)
-#     assert issubclass(some, Option)
-
-def test_subscripting_Option():
-    pass
-    # assert Option[int] == "Option[int]"
-    # assert Option[int] == 1
-    
-
-# def test_s():
-#     def results(case: int) -> Option[int]:
-#         if case:
-#             return Option(case)
-#         else:
-#             return "Blablabla"
-
-
-#     assert isinstance(results(1), Option[int]) 
+def test_Option_has_attrs_some_and_none():
+    assert hasattr(Option, 'some')
+    assert hasattr(Option, 'none')

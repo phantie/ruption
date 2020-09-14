@@ -45,17 +45,6 @@ class Option(Generic[T], metaclass=OptionMeta):
     def __new__(cls, value):
         return cls.into(value)
 
-    # def __instancecheck__(cls, inst):
-    #     print('it ran')
-    #     # return isinstance(inst, some) or inst is none
-    #     if isinstance(inst, some):
-    #         if isinstance(inst.T, cls.__args__[0]):
-    #             return True
-        
-    #     if inst is none:
-    #         return True
-
-    #     return False  
 
     @classmethod
     def into(cls, value):
@@ -362,3 +351,4 @@ class none(OptionInterface):
         return self
 
 
+Option.some, Option.none = some, none
