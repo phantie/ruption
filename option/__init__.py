@@ -22,7 +22,8 @@ from abc import ABC, abstractmethod
 from typing import NewType, Callable, Any, Iterable, TypeVar, Generic
 from option.exceptions import *
 
-__version__ = '1.2'
+__version_tuple__ = (1, 2)
+__version__ = '.'.join(str(el) for el in __version_tuple__)
 
 E = NewType('E', Exception) # error
 P = NewType('P', Callable)  # predicate

@@ -265,3 +265,49 @@ def test_expect():
 def test_Option_has_attrs_some_and_none():
     assert hasattr(Option, 'some')
     assert hasattr(Option, 'none')
+
+
+def test_Option_as_typehint():
+    from typing import Callable, Any
+    from contextlib import suppress
+
+    def parse(value: Any, parser: Callable) -> Option[Any]:
+        try:
+            return some(parser(value))
+        except:
+            return none
+
+    int_parser = lambda v: int(v)
+    assert parse('13', int_parser) == some(13)
+    assert parse('Q', int_parser) is none
+
+    with suppress(ImportError):
+        from typeguard import typechecked
+        from typing import List
+        from sys import version_info
+        from option import __version_tuple__
+
+        if version_info >= (3, 9):
+            List = list
+
+        @typechecked
+        def tokenize(value) -> Option[List[str]]:
+            if isinstance(value, str):
+                return some(list(value))
+            elif value == 42:
+                return 'Oh no 42!'
+            elif value == 13:
+                return some(13)
+            else:
+                return none
+
+        assert tokenize('abc') == some(['a', 'b', 'c'])
+        assert tokenize(123) is none
+
+        with pytest.raises(TypeError) as err:
+            tokenize(42)
+
+        assert str(err.value) == 'type of the return value must be option.Option; got str instead'
+
+        if __version_tuple__ == (1, 2):
+            assert tokenize(13) == some(13) # does not throw an error because it yet cannot typecheck the inner value
