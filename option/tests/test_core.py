@@ -26,7 +26,7 @@ def test_converts_python_None_into_option_none():
     assert Option.into(None) is none
 
 def test_option_into_returns_option_some_if_arg_is_not_None():
-    assert isinstance(Option.into(13), Option.some)
+    assert isinstance(Option.into(13), some)
 
 def test_converts_not_None_into_option_some():
     some_value = "Me not none, me some."
@@ -260,3 +260,24 @@ def test_expect():
         none.expect('definitely will not fail')
 
     assert str(err.value) == 'definitely will not fail'
+
+
+# def test_relations():
+#     assert isinstance(none, Option)
+#     assert issubclass(some, Option)
+
+def test_subscripting_Option():
+    pass
+    # assert Option[int] == "Option[int]"
+    # assert Option[int] == 1
+    
+
+# def test_s():
+#     def results(case: int) -> Option[int]:
+#         if case:
+#             return Option(case)
+#         else:
+#             return "Blablabla"
+
+
+#     assert isinstance(results(1), Option[int]) 
