@@ -311,5 +311,5 @@ def test_Option_as_typehint():
 
         assert str(err.value) == 'type of the return value must be option.Option; got str instead'
 
-        if __version_tuple__ == (1, 2):
+        if __version_tuple__ < (1, 3):
             assert tokenize(13) == some(13) # does not throw an error because it yet cannot typecheck the inner value
