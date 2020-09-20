@@ -1,10 +1,12 @@
 import pytest
 
-from option.prelude import *
+from option import *
 
 def test_option_none_raises_option_noneValue_if_unwrap():
-    with pytest.raises(noneValue):
+    with pytest.raises(Panic) as err:
         none.unwrap()
+
+    assert str(err.value) == 'called `Option.unwrap()` on a `none` value'
 
 def test_unwrap_of_some_variable_returns_the_variable():
     assert some(42).unwrap() == 42
@@ -183,13 +185,13 @@ def test_copied():
 
 
 def test_expect_none():
-    with pytest.raises(noneIsExpected):
+    with pytest.raises(Panic):
         some(1).expect_none()
 
     assert none.expect_none() is None
 
 def test_unwrap_none():
-    with pytest.raises(noneIsExpected):
+    with pytest.raises(Panic):
         some(1).unwrap_none()
 
     assert none.unwrap_none() is none
@@ -256,7 +258,7 @@ def test__and():
 def test_expect():
     assert some(1).expect('cannot fail') == 1
 
-    with pytest.raises(noneValue) as err:
+    with pytest.raises(Panic) as err:
         none.expect('definitely will not fail')
 
     assert str(err.value) == 'definitely will not fail'
