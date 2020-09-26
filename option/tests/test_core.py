@@ -209,12 +209,6 @@ def test_flatten():
     assert none is none.flatten()
 
 
-def test_option_new():
-    assert Option(None) is none
-    assert Option(12) == some(12)
-    assert Option(none) is none
-    assert Option(some(3)) == some(3)
-
 def test_also():
     x = some(2)
     y = none
@@ -264,11 +258,6 @@ def test_expect():
     assert str(err.value) == 'definitely will not fail'
 
 
-def test_Option_has_attrs_some_and_none():
-    assert hasattr(Option, 'some')
-    assert hasattr(Option, 'none')
-
-
 def test_Option_as_typehint():
     from typing import Callable, Any
     from contextlib import suppress
@@ -311,5 +300,7 @@ def test_Option_as_typehint():
 
         assert str(err.value) == 'type of the return value must be option.Option; got str instead'
 
-        if __version_tuple__ < (1, 3):
+        if False:
             assert tokenize(13) == some(13) # does not throw an error because it yet cannot typecheck the inner value
+
+        

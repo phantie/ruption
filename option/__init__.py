@@ -18,13 +18,14 @@
     from option import *
 """
 
-from abc import ABC, abstractmethod
+from __future__ import annotations
+from abc import abstractmethod, ABCMeta
 from typing import NewType, Callable, Any, Iterable, TypeVar, Generic, Union, Tuple, Type
 
 __all__ = ['Option', 'some', 'none', 'Panic']
 
 
-__version_tuple__ = (1, 2, 1)
+__version_tuple__ = (1, 3)
 __version__ = '.'.join(str(el) for el in __version_tuple__)
 
 E = NewType('E', Exception) # error
@@ -36,22 +37,7 @@ D = TypeVar('D')            # default
 
 class Panic(Exception): ...
 
-def instancer(cls):
-    return cls()
-
-
-class OptionMeta(type):
-    def __subclasscheck__(cls, subclass):
-        return subclass is some
-
-    def __instancecheck__(cls, inst):
-        return isinstance(inst, some) or inst is none
-
-
-class Option(Generic[T], metaclass=OptionMeta):
-    def __new__(cls, value):
-        return cls.into(value)
-
+class Option(Generic[T], metaclass=ABCMeta):
 
     @classmethod
     def into(cls, value):
@@ -59,8 +45,6 @@ class Option(Generic[T], metaclass=OptionMeta):
         elif isinstance(value, some) or value is none: return value
         else: return some(value)
 
-
-class OptionInterface(ABC):
     @abstractmethod
     def unwrap(self) -> Union[T, E]: ...
 
@@ -146,7 +130,8 @@ class OptionInterface(ABC):
 
 
 
-class some(OptionInterface):
+class some(Option):
+
     def __init__(self, T: T):
         self.T = T
 
@@ -267,8 +252,11 @@ class some(OptionInterface):
         return self.T
 
 
-@instancer
-class none(OptionInterface):
+def init(cls): return cls()
+
+@init
+class none(Option):
+
     def __bool__(self):
         return False
 
@@ -359,6 +347,3 @@ class none(OptionInterface):
 
     def flatten(self):
         return self
-
-
-Option.some, Option.none = some, none
