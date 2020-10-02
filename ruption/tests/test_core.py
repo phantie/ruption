@@ -1,6 +1,6 @@
 import pytest
 
-from option import *
+from ruption import *
 
 def test_option_none_raises_option_noneValue_if_unwrap():
     with pytest.raises(Panic) as err:
