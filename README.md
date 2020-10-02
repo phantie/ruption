@@ -18,4 +18,4 @@ Changed func. signatures:
 
 Preferred usage:
 
-    from option import *
+    from ruption import *
