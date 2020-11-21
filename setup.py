@@ -3,10 +3,10 @@
 
 from setuptools import setup, find_packages
 from os.path import join, dirname
-from option import __version__
+from ruption import __version__
 
 setup(
-    name = 'option',
+    name = 'ruption',
     version = __version__,
     packages = find_packages(),
     long_description = open(join(dirname(__file__), 'README.md')).read(),
