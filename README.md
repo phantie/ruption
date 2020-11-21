@@ -15,7 +15,11 @@ Changed func. signatures:
     unwrap_or_default: added 'type' :Type[Any]: argument considering python cannot infer type
     zip: unlimited amount of positional arguments
     zip_with: unlimited amount of positional arguments, and required kw-only argument 'f' :Callable:
+    
+Install:
+    
+    pip install git+https://github.com/phantie/ruption.git --upgrade
 
 Preferred usage:
 
-    from ruption import *
+    from ruption import * #includes [Option, some, none, Panic]
