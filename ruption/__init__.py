@@ -45,6 +45,24 @@ class Option(Generic[T], metaclass=ABCMeta):
         elif isinstance(value, some) or value is none: return value
         else: return some(value)
 
+    @classmethod
+    def lift(cls, f: Callable[[Any], Any]) -> Callable[[some], some]:
+        """
+            def addOne(x):
+                return x + 1
+
+            addOneToOption = Option.lift(addOne)
+
+            assert addOneToOption(Some(1)) == Some(2)
+        """
+        from functools import wraps
+
+        @wraps(f)
+        def wrap(s: some):
+            return some(f(s.unwrap()))
+
+        return wrap
+
     @abstractmethod
     def unwrap(self) -> Union[T, E]: ...
 
@@ -128,6 +146,8 @@ class Option(Generic[T], metaclass=ABCMeta):
     @abstractmethod
     def flatten(self) -> Union[T, Option[T]]: ...
 
+    @abstractmethod
+    def if_some_do(self, f: Callable[[T], R]): ...
 
 
 class some(Option):
@@ -251,6 +271,9 @@ class some(Option):
     def flatten(self):
         return self.T
 
+    def if_some_do(self, f):
+        return f(self.T)
+
 
 def init(cls): return cls()
 
@@ -346,4 +369,7 @@ class none(Option):
         return type()
 
     def flatten(self):
+        return self
+
+    def if_some_do(self, f):
         return self
