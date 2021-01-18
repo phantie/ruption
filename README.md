@@ -12,14 +12,15 @@ These methods are also renamed:
 
 Changed func. signatures:
 
-    unwrap_or_default: added 'type' :Type[Any]: argument considering python cannot infer type
-    zip: unlimited amount of positional arguments
-    zip_with: unlimited amount of positional arguments, and required kw-only argument 'f' :Callable:
+    unwrap_or_default: added `type` argument because python cannot infer type
+    zip: no limits for positional arguments
+    zip_with: no limits for positional arguments, and required kw-only callable `f`
+    flatten: got `times` argument to flatten an object several times, .flatten(2) == .flatten().flatten()
     
 Install:
     
-    pip install git+https://github.com/phantie/ruption.git --upgrade
+    pip install git+https://github.com/phantie/ruption.git -U
 
-Preferred usage:
+Import:
 
-    from ruption import * #includes [Option, some, none, Panic]
+    from ruption import Option, some, none, Panic

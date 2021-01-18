@@ -1,32 +1,40 @@
-""" Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html .
-    A step towards writing more reliable software in python.
+"""
+Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html .
+A step towards writing more reliable software in python.
 
-    Methods not suitable for python, regarding pointers, immutability, etc - ain`t implemented.
+Methods not suitable for python, regarding pointers, immutability, etc - are not implemented.
 
-    Due to "None" being reserved, "Some and None" are renamed to "some and none".
+Due to "None" being reserved, "Some and None" are renamed to "some and none".
 
-    These methods are also renamed:
-        and: also / _and
-        or: otherwise / _or
+These methods are also renamed:
 
-    Changed func. signatures:
-        unwrap_or_default: added 'type' :Type[Any]: argument considering python cannot infer type
-        zip: unlimited amount of positional arguments
-        zip_with: unlimited amount of positional arguments, and required kw-only argument 'f' :Callable:
+    and: also / _and
+    or: otherwise / _or
 
-    Preferred usage:
-    from option import *
+Changed func. signatures:
+
+    unwrap_or_default: added `type` argument because python cannot infer type
+    zip: no limits for positional arguments
+    zip_with: no limits for positional arguments, and required kw-only callable `f`
+    flatten: got `times` argument to flatten an object several times, .flatten(2) == .flatten().flatten()
+    
+Install:
+    
+    pip install git+https://github.com/phantie/ruption.git -U
+
+Import:
+
+    from ruption import Option, some, none, Panic
 """
 
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
 from typing import NewType, Callable, Any, Iterable, TypeVar, Generic, Union, Tuple, Type
 
+
 __all__ = ['Option', 'some', 'none', 'Panic']
+__version__ = 1, 4
 
-
-__version_tuple__ = (1, 3)
-__version__ = '.'.join(str(el) for el in __version_tuple__)
 
 E = NewType('E', Exception) # error
 P = NewType('P', Callable)  # predicate
@@ -144,7 +152,7 @@ class Option(Generic[T], metaclass=ABCMeta):
     def unwrap_or_default(self, type: Type) -> Union[T, R]: ...
 
     @abstractmethod
-    def flatten(self) -> Union[T, Option[T]]: ...
+    def flatten(self, times = 1) -> Union[T, Option[T]]: ...
 
     @abstractmethod
     def if_some_do(self, f: Callable[[T], R]): ...
@@ -268,8 +276,15 @@ class some(Option):
     def unwrap_or_default(self, type):
         return self.unwrap()
 
-    def flatten(self):
-        return self.T
+    def flatten(self, times = 1):
+        not_zero = times - 1
+        if not_zero:
+            result = self.flatten()
+            for i in range(not_zero):
+                result = result.flatten()
+            return result
+        else:
+            return self.T
 
     def if_some_do(self, f):
         return f(self.T)
@@ -368,7 +383,7 @@ class none(Option):
     def unwrap_or_default(self, type):
         return type()
 
-    def flatten(self):
+    def flatten(self, times = 1):
         return self
 
     def if_some_do(self, f):

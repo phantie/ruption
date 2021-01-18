@@ -208,6 +208,11 @@ def test_flatten():
     assert none is some(none).flatten()
     assert none is none.flatten()
 
+    assert 1 == some(some(1)).flatten(2)
+    assert some(1) == some(some(some(1))).flatten(2)
+    assert none is some(none).flatten(13)
+    assert none is none.flatten(13)
+
 
 def test_also():
     x = some(2)
