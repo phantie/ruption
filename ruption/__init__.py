@@ -33,7 +33,7 @@ from typing import NewType, Callable, Any, Iterable, TypeVar, Generic, Union, Tu
 
 
 __all__ = ['Option', 'some', 'none', 'Panic']
-__version__ = 1, 4
+__version__ = 1, 4, 1
 
 
 E = NewType('E', Exception) # error
@@ -155,7 +155,7 @@ class Option(Generic[T], metaclass=ABCMeta):
     def flatten(self, times = 1) -> Union[T, Option[T]]: ...
 
     @abstractmethod
-    def if_some_do(self, f: Callable[[T], R]): ...
+    def if_some_do(self, f: Callable[[T], R]) -> Union[R, none]: ...
 
 
 class some(Option):
