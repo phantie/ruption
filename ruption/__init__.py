@@ -26,7 +26,6 @@ Import:
 
     from ruption import Option, some, none, Panic
 """
-
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
 from typing import NewType, Callable, Any, Iterable, TypeVar, Generic, Union, Tuple, Type
