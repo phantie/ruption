@@ -8,7 +8,7 @@ from .panic import Panic
 
 __all__ = ['Option', 'some', 'none']
 
-class Option(Generic[O], metaclass=ABCMeta):
+class Option(Generic[I], metaclass=ABCMeta):
 
     @classmethod
     def into(cls, value):
@@ -34,8 +34,14 @@ class Option(Generic[O], metaclass=ABCMeta):
 
         return wrap
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap
     @abstractmethod
-    def unwrap(self) -> Union[T, E]: ...
+    def unwrap(self) -> I:
+        """
+            returns inner value if some,
+            panics if x is none
+        """
+        ...
 
     @abstractmethod
     def unwrap_or(self, another: V) -> Union[T, V]: ...
@@ -77,7 +83,7 @@ class Option(Generic[O], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.filter
     @abstractmethod
-    def filter(self, p: Callable[[T], bool]) -> Option[T]: ...
+    def filter(self, p: Callable[[I], bool]) -> Option[I]: ...
 
     @abstractmethod
     def otherwise(self, another: Option) -> Option: ...
@@ -122,10 +128,9 @@ class Option(Generic[O], metaclass=ABCMeta):
     def if_some_do(self, f: Callable[[T], R]) -> Union[R, none]: ...
 
 
-class some(Option):
-
-    def __init__(self, T: T):
-        self.T = T
+class some(Option[I]):
+    def __init__(self, value: I):
+        self.T = value
 
     def __str__(self):
         return f'Option.some({self.T !r})'
@@ -133,7 +138,8 @@ class some(Option):
     def __repr__(self):
         return str(self)
 
-    def unwrap(self):
+    def unwrap(self) -> I:
+        """returns inner value"""
         return self.T
 
     def unwrap_or(self, another):
@@ -178,7 +184,7 @@ class some(Option):
 
         return some(res)
 
-    def filter(self, p: Callable[[T], bool]) -> Option[T]:
+    def filter(self, p: Callable[[I], bool]) -> Option[I]:
         return self if p(self.T) else none
         
 
@@ -255,7 +261,7 @@ class some(Option):
 def init(cls): return cls()
 
 @init
-class none(Option):
+class none(Option[I]):
 
     def __bool__(self):
         return False
@@ -267,6 +273,7 @@ class none(Option):
         return str(self)
 
     def unwrap(self):
+        """panics"""
         raise Panic('called `Option.unwrap()` on a `none` value')
 
     def unwrap_or(self, another):
@@ -307,7 +314,7 @@ class none(Option):
     def and_then(self, f):
         return self
 
-    def filter(self, p: Callable[[T], bool]) -> Option[T]:
+    def filter(self, p: Callable[[I], bool]) -> Option[I]:
         return self
 
     def otherwise(self, another):
