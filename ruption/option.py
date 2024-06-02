@@ -8,7 +8,7 @@ from .panic import Panic
 
 __all__ = ['Option', 'some', 'none']
 
-class Option(Generic[T], metaclass=ABCMeta):
+class Option(Generic[O], metaclass=ABCMeta):
 
     @classmethod
     def into(cls, value):
@@ -180,6 +180,7 @@ class some(Option):
 
     def filter(self, p: Callable[[T], bool]) -> Option[T]:
         return self if p(self.T) else none
+        
 
     def otherwise(self, another):
         return self
