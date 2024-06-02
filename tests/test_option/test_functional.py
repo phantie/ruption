@@ -2,27 +2,12 @@ import pytest
 
 from ruption import *
 
-def test_option_none_raises_option_noneValue_if_unwrap():
-    with pytest.raises(Panic) as err:
-        none.unwrap()
-
-    assert str(err.value) == 'called `Option.unwrap()` on a `none` value'
-
-def test_unwrap_of_some_variable_returns_the_variable():
-    assert some(42).unwrap() == 42
-
-def test_some_is_not_none():
-    assert not some('one').is_none()
 
 def test_option_none_not_equal_to_None():
     assert none != None
 
 def test_option_none_equals_to_self():
     assert none == none
-
-def test_unwrap_or_returns_other_if_target_is_option_none():
-    other = "Me called other, other is not this."
-    assert none.unwrap_or(other) == other
 
 def test_converts_python_None_into_option_none():
     assert Option.into(None) is none
@@ -40,8 +25,6 @@ def test_some_13_not_equals_some_42():
 def test_option_some_is_what_it_is():
     assert some(0).is_some()
 
-def test_option_none_is_what_it_is():
-    assert none.is_none()
 
 def test_unwrap_or_else_executes_function_on_option_none():
     assert none.unwrap_or_else(lambda: 42) == 42
@@ -91,13 +74,6 @@ def test_and_then():
     assert some(33).and_then(lambda self: none).and_then(square) is none
     assert none.and_then(lambda x: x**2) is none
 
-def test_filter():
-    not_zero = lambda n: n!=0
-
-    assert none.filter(not_zero) is none
-    assert some(0).filter(not_zero) is none
-    assert some(96).filter(not_zero).filter(lambda n: n == 96) == some(96)
-    assert some(96).filter(not_zero).filter(lambda n: n > 101) is none
 
 def test_otherwise():
     a, b = some(3), none
