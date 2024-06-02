@@ -19,7 +19,11 @@ class Option(Generic[I], metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def unwrap_or(self, another: V) -> Union[T, V]: ...
+    def unwrap_or(self, default: I) -> I:
+        """
+            returns inner value or default
+        """
+        ...
 
     @classmethod
     @abstractmethod
@@ -141,7 +145,7 @@ class some(Option[I]):
         """returns inner value"""
         return self.T
 
-    def unwrap_or(self, another):
+    def unwrap_or(self, default: I) -> I:
         return self.unwrap()
 
     @classmethod
@@ -275,8 +279,8 @@ class none(Option[I]):
         """panics"""
         raise Panic('called `Option.unwrap()` on a `none` value')
 
-    def unwrap_or(self, another):
-        return another
+    def unwrap_or(self, default: I) -> I:
+        return default
 
     @classmethod
     def is_none(cls):
