@@ -32,3 +32,13 @@ def unwrap_or():
     none.unwrap_or(1)
     none[int].unwrap_or(1)
     some(1).unwrap_or(0)
+
+def is_none():
+    def _():
+        a: Option = ...
+        a.is_none()
+    a: Option[int] = ...
+    a.is_none()
+    none.is_none()
+    none[int].is_none()
+    some(1).is_none()

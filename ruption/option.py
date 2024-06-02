@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
-from typing import Callable, Any, Iterable, Generic, Union, Tuple, Type, NoReturn
+from typing import Callable, Any, Iterable, Generic, Union, Tuple, Type, NoReturn, Literal
 
 from .typing import *
 from .panic import Panic
@@ -16,18 +16,20 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns inner value if some,
             panics if none
         """
-        ...
 
     @abstractmethod
     def unwrap_or(self, default: I) -> I:
         """
             returns inner value or default
         """
-        ...
 
     @classmethod
     @abstractmethod
-    def is_none(self) -> bool: ...
+    def is_none(self) -> bool:
+        """
+            returns true if none
+            returns false if some
+        """
 
     @classmethod
     @abstractmethod
@@ -149,7 +151,10 @@ class some(Option[I]):
         return self.unwrap()
 
     @classmethod
-    def is_none(cls):
+    def is_none(cls) -> Literal[False]:
+        """
+            returns false
+        """
         return False
 
     @classmethod
@@ -283,7 +288,10 @@ class none(Option[I]):
         return default
 
     @classmethod
-    def is_none(cls):
+    def is_none(cls) -> Literal[True]:
+        """
+            returns true
+        """
         return True
 
     @classmethod
