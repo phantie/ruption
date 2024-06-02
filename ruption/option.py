@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
-from typing import Callable, Any, Iterable, Generic, Union, Tuple, Type
+from typing import Callable, Any, Iterable, Generic, Union, Tuple, Type, NoReturn
 
 from .typing import *
 from .panic import Panic
@@ -272,7 +272,7 @@ class none(Option[I]):
     def __repr__(self):
         return str(self)
 
-    def unwrap(self):
+    def unwrap(self) -> NoReturn:
         """panics"""
         raise Panic('called `Option.unwrap()` on a `none` value')
 
