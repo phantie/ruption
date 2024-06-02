@@ -1,5 +1,5 @@
 from ruption import *
-from util import VALUE, VALUE_TYPE
+from util import VALUE, VALUE_TYPE, OTHER_VALUE
 
 
 def type_hinting():
@@ -15,7 +15,8 @@ def type_hinting():
     some(VALUE).unwrap_or(VALUE)
 
 
-
+def test_unwrap_or_returns_inner_if_called_on_some():
+    assert some(VALUE).unwrap_or_else(OTHER_VALUE) == VALUE
 
 def test_unwrap_or_returns_default_if_called_on_none():
     assert none.unwrap_or(VALUE) == VALUE
