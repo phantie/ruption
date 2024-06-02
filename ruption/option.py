@@ -25,7 +25,6 @@ class Option(Generic[I], metaclass=ABCMeta):
         """
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.is_none
-    @classmethod
     @abstractmethod
     def is_none(self) -> bool:
         """
@@ -34,7 +33,6 @@ class Option(Generic[I], metaclass=ABCMeta):
         """
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.is_some
-    @classmethod
     @abstractmethod
     def is_some(self) -> bool:
         """
@@ -162,15 +160,13 @@ class some(Option[I]):
     def unwrap_or(self, default: I) -> I:
         return self.unwrap()
 
-    @classmethod
-    def is_none(cls) -> Literal[False]:
+    def is_none(self) -> Literal[False]:
         """
             returns false
         """
         return False
 
-    @classmethod
-    def is_some(cls) -> Literal[True]:
+    def is_some(self) -> Literal[True]:
         """
             returns true
         """
@@ -305,15 +301,13 @@ class none(Option[I]):
     def unwrap_or(self, default: I) -> I:
         return default
 
-    @classmethod
-    def is_none(cls) -> Literal[True]:
+    def is_none(self) -> Literal[True]:
         """
             returns true
         """
         return True
 
-    @classmethod
-    def is_some(cls) -> Literal[False]:
+    def is_some(self) -> Literal[False]:
         """
             returns false
         """
