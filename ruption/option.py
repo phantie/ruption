@@ -314,7 +314,7 @@ class none(Option[I]):
     def and_then(self, f):
         return self
 
-    def filter(self, p: Callable[[I], bool]) -> Option[I]:
+    def filter(self, p: Callable[[I], bool]) -> none:
         return self
 
     def otherwise(self, another):
