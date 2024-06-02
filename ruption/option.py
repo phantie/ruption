@@ -57,7 +57,11 @@ class Option(Generic[I], metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def map(self, f: Callable[[T], R]) -> Option[R]: ...
+    def map(self, fn: Callable[[I], R]) -> Option[R]:
+        """
+            returns some value transformed with fn if some
+            returns none if none
+        """
 
     @abstractmethod
     def map_or(self, default: D, f: Callable[[T], R]) -> Union[D, Option[R]]: ...
@@ -192,8 +196,11 @@ class some(Option[I]):
         """
         return self.unwrap()
 
-    def map(self, f):
-        return some(f(self.T))
+    def map(self, fn: Callable[[I], R]) -> some[R]:
+        """
+            returns some value transformed with fn
+        """
+        return some(fn(self.unwrap()))
 
     def map_or(self, default, f):
         return self.map(f)
@@ -336,7 +343,10 @@ class none(Option[I]):
         """
         return fn()
 
-    def map(self, f):
+    def map(self, fn: Callable[[I], R]) -> none[I]:
+        """
+            returns none
+        """
         return self
 
     def map_or(self, default, f):
