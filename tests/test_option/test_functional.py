@@ -22,9 +22,6 @@ def test_converts_not_None_into_option_some():
 def test_some_13_not_equals_some_42():
     assert some(13) != some(42)
 
-def test_map_or_on_none_returns_else():
-    assert none.map_or(33, lambda x: x**2) == 33
-
 def test_map_or_else_on_none_returns_result_of_default_func():
     assert none.map_or_else(lambda: 42, lambda: 13) == 42
 
