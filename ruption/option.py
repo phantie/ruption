@@ -17,12 +17,14 @@ class Option(Generic[I], metaclass=ABCMeta):
             panics if none
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap_or
     @abstractmethod
     def unwrap_or(self, default: I) -> I:
         """
             returns inner value or default
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.is_none
     @classmethod
     @abstractmethod
     def is_none(self) -> bool:
@@ -31,6 +33,7 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns false if some
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.is_some
     @classmethod
     @abstractmethod
     def is_some(self) -> bool:
@@ -39,8 +42,13 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns false if none
         """
 
+    # was removed from latest rust, with recommendation to use is_some_and instead
     @abstractmethod
-    def contains(self, value: Any) -> bool: ...
+    def contains(self, cmp: I) -> bool:
+        """
+            returns true if is some and inner value equals to cmp
+            returns false otherwise
+        """
 
     @abstractmethod
     def unwrap_or_else(self, f: Callable[[], V]) -> Union[T, V]: ...
@@ -168,8 +176,11 @@ class some(Option[I]):
         """
         return True
 
-    def contains(self, value):
-        return self.T == value
+    def contains(self, cmp: I) -> bool:
+        """
+            returns true if inner value equals to cmp
+        """
+        return self.T == cmp
 
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.T == another.T
@@ -308,7 +319,10 @@ class none(Option[I]):
         """
         return False
 
-    def contains(self, value):
+    def contains(self, cmp: I) -> Literal[False]:
+        """
+            returns false
+        """
         return False
 
     def __eq__(self, another):
