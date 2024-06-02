@@ -48,8 +48,13 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns false otherwise
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap_or_else
     @abstractmethod
-    def unwrap_or_else(self, f: Callable[[], V]) -> Union[T, V]: ...
+    def unwrap_or_else(self, fn: Callable[[], I]) -> I:
+        """
+            returns inner value if some
+            returns result of calling fn if none
+        """
 
     @abstractmethod
     def map(self, f: Callable[[T], R]) -> Option[R]: ...
@@ -181,7 +186,10 @@ class some(Option[I]):
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.T == another.T
 
-    def unwrap_or_else(self, f):
+    def unwrap_or_else(self, fn: Callable[[], I]) -> I:
+        """
+            returns inner value
+        """
         return self.unwrap()
 
     def map(self, f):
@@ -322,8 +330,11 @@ class none(Option[I]):
     def __eq__(self, another):
         return self is another
 
-    def unwrap_or_else(self, f):
-        return f()
+    def unwrap_or_else(self, fn: Callable[[], I]) -> I:
+        """
+            returns result of calling fn
+        """
+        return fn()
 
     def map(self, f):
         return self
