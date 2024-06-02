@@ -261,10 +261,10 @@ class some(Option[I]):
         return f(self.T)
 
 
-def init(cls): return cls()
-
-@init
 class none(Option[I]):
+    # keep none as a soft singleton, but also add subscriptability on the instance for type hinting
+    def __getitem__(self, t: Type[I]) -> none[I]:
+        return self
 
     def __bool__(self):
         return False
@@ -360,3 +360,5 @@ class none(Option[I]):
 
     def if_some_do(self, f):
         return self
+
+none = none()
