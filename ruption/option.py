@@ -33,7 +33,11 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def is_some(self) -> bool: ...
+    def is_some(self) -> bool:
+        """
+            returns true if some
+            returns false if none
+        """
 
     @abstractmethod
     def contains(self, value: Any) -> bool: ...
@@ -158,7 +162,10 @@ class some(Option[I]):
         return False
 
     @classmethod
-    def is_some(cls):
+    def is_some(cls) -> Literal[True]:
+        """
+            returns true
+        """
         return True
 
     def contains(self, value):
@@ -295,7 +302,10 @@ class none(Option[I]):
         return True
 
     @classmethod
-    def is_some(cls):
+    def is_some(cls) -> Literal[False]:
+        """
+            returns false
+        """
         return False
 
     def contains(self, value):

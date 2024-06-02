@@ -7,17 +7,16 @@ def type_hinting():
 
     def _():
         a: Option = ...
-        a.is_none()
+        a.is_some()
     a: Option[VALUE_TYPE] = ...
-    a.is_none()
-    none.is_none()
-    none[VALUE_TYPE].is_none()
-    some(VALUE).is_none()
+    a.is_some()
+    none.is_some()
+    none[VALUE_TYPE].is_some()
+    some(VALUE).is_some()
 
 
-def test_none_is_none():
-    assert none.is_none()
+def test_some_is_some():
+    assert some(VALUE).is_some()
 
-
-def test_some_is_not_none():
-    assert not some(VALUE).is_none()
+def test_none_is_not_some():
+    assert not none.is_some()

@@ -22,10 +22,6 @@ def test_converts_not_None_into_option_some():
 def test_some_13_not_equals_some_42():
     assert some(13) != some(42)
 
-def test_option_some_is_what_it_is():
-    assert some(0).is_some()
-
-
 def test_unwrap_or_else_executes_function_on_option_none():
     assert none.unwrap_or_else(lambda: 42) == 42
 
