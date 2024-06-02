@@ -16,6 +16,6 @@ def filter():
     a.filter()
     a: Option[int] = ...
     a.filter()
-    lambda: none.filter()
+    none.filter()
     some(1).filter()
 
