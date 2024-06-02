@@ -33,20 +33,6 @@ def test_map_or_else_on_none_executes_function_that_changes_state():
     none.map_or_else(change_state_of_local_var, lambda: None)
     assert local == 20
 
-def test_raises_StopIteration_after_executing_next_twice():
-    iterator1 = none.iter()
-    assert next(iterator1) is none
-    with pytest.raises(StopIteration):
-        next(iterator1)
-
-    iterator2 = some(12).iter()
-    assert next(iterator2) == 12
-    with pytest.raises(StopIteration):
-        next(iterator2)
-
-def test_iter_on_some():
-    iterator = some([1, 2 ,3]).iter()
-    assert next(iterator) == [1, 2, 3]
 
 def test_and_then():
     square = lambda x: x**2

@@ -1,7 +1,7 @@
 
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
-from typing import Callable, Any, Iterable, Generic, Union, Tuple, Type, NoReturn, Literal
+from typing import Callable, Any, Iterator, Generic, Union, Tuple, Type, NoReturn, Literal
 
 from .typing import *
 from .panic import Panic
@@ -81,7 +81,11 @@ class Option(Generic[I], metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def iter(self) -> Iterable: ...
+    def iter(self) -> Iterator[I]:
+        """
+            returns iterator yielding inner value once if some
+            returns empty iterator if none
+        """
     
     @abstractmethod
     def also(self, another: Option) -> Option: ...
@@ -225,8 +229,11 @@ class some(Option[I]):
         """
         return self.map(fn)
 
-    def iter(self):
-        return iter([self.T])
+    def iter(self) -> Iterator[I]:
+        """
+            returns iterator yielding inner value once
+        """
+        return [self.unwrap()].__iter__()
 
     def also(self, another):
         return another
@@ -378,8 +385,11 @@ class none(Option[I]):
         """
         return some(default())
 
-    def iter(self):
-        return iter([self])
+    def iter(self) -> Iterator[I]:
+        """
+            returns empty iterator
+        """
+        return [].__iter__()
 
     def also(self, another):
         return self
