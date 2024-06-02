@@ -75,8 +75,9 @@ class Option(Generic[T], metaclass=ABCMeta):
     @abstractmethod
     def and_then(self, f: Callable[[T], R]) -> Option[R]: ...
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.filter
     @abstractmethod
-    def filter(self, P: P) -> Option: ...
+    def filter(self, p: Callable[[T], bool]) -> Option[T]: ...
 
     @abstractmethod
     def otherwise(self, another: Option) -> Option: ...
@@ -177,11 +178,8 @@ class some(Option):
 
         return some(res)
 
-    def filter(self, P):
-        if P(self.T):
-            return self
-        else:
-            return none
+    def filter(self, p: Callable[[T], bool]) -> Option[T]:
+        return self if p(self.T) else none
 
     def otherwise(self, another):
         return self
@@ -308,7 +306,7 @@ class none(Option):
     def and_then(self, f):
         return self
 
-    def filter(self, P):
+    def filter(self, p: Callable[[T], bool]) -> Option[T]:
         return self
 
     def otherwise(self, another):
