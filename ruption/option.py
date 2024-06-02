@@ -9,37 +9,12 @@ from .panic import Panic
 __all__ = ['Option', 'some', 'none']
 
 class Option(Generic[I], metaclass=ABCMeta):
-
-    @classmethod
-    def into(cls, value):
-        if value is None: return none
-        elif isinstance(value, some) or value is none: return value
-        else: return some(value)
-
-    @classmethod
-    def lift(cls, f: Callable[[Any], Any]) -> Callable[[some], some]:
-        """
-            def addOne(x):
-                return x + 1
-
-            addOneToOption = Option.lift(addOne)
-
-            assert addOneToOption(Some(1)) == Some(2)
-        """
-        from functools import wraps
-
-        @wraps(f)
-        def wrap(s: some):
-            return some(f(s.unwrap()))
-
-        return wrap
-
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap
     @abstractmethod
     def unwrap(self) -> I:
         """
             returns inner value if some,
-            panics if x is none
+            panics if none
         """
         ...
 
@@ -126,6 +101,30 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     @abstractmethod
     def if_some_do(self, f: Callable[[T], R]) -> Union[R, none]: ...
+
+    @classmethod
+    def into(cls, value):
+        if value is None: return none
+        elif isinstance(value, some) or value is none: return value
+        else: return some(value)
+
+    @classmethod
+    def lift(cls, f: Callable[[Any], Any]) -> Callable[[some], some]:
+        """
+            def addOne(x):
+                return x + 1
+
+            addOneToOption = Option.lift(addOne)
+
+            assert addOneToOption(Some(1)) == Some(2)
+        """
+        from functools import wraps
+
+        @wraps(f)
+        def wrap(s: some):
+            return some(f(s.unwrap()))
+
+        return wrap
 
 
 class some(Option[I]):
