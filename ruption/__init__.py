@@ -29,7 +29,8 @@ Import:
 
 from .panic import Panic
 from .option import *
+from .result import *
 
-__all__ = ['Panic', 'Option', 'some', 'none']
+__all__ = ['Panic', 'Option', 'some', 'none', 'Result', 'ok', 'err']
 __version__ = 1, 4, 1
 
