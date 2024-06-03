@@ -66,7 +66,7 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.map_or
     @abstractmethod
-    def map_or(self, default: R, fn: Callable[[I], R]) -> some[R]:
+    def map_or(self, default: R, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn if some
             returns some default if none
@@ -74,7 +74,7 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.map_or_else
     @abstractmethod
-    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> some[R]:
+    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn if some
             returns some result of calling default if none
@@ -94,7 +94,7 @@ class Option(Generic[I], metaclass=ABCMeta):
         return self.also(another)
 
     @abstractmethod
-    def and_then(self, f: Callable[[T], R]) -> Option[R]: ...
+    def and_then(self, f: Callable[[I], Option[R]]) -> Option[R]: ...
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.filter
     @abstractmethod
@@ -110,19 +110,19 @@ class Option(Generic[I], metaclass=ABCMeta):
     def or_else(self, f: Callable[[], R]) -> Union[T, R]: ...
 
     @abstractmethod
-    def xor(self, optb: Option) -> Option: ...
+    def xor(self, optb: Option[I]) -> Option[I]: ...
 
     @abstractmethod
-    def zip(self, another: Option) -> Option[Tuple[T, V]]: ...
+    def zip(self, another: Option[U]) -> Option[Tuple[I, U]]: ...
 
     @abstractmethod
-    def zip_with(self, another: Option, f: Callable[[T, V], R]) -> Option[R]: ...
+    def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]: ...
 
     @abstractmethod
-    def copied(self) -> Option: ...
+    def copied(self) -> Option[I]: ...
 
     @abstractmethod
-    def cloned(self) -> Option: ...
+    def cloned(self) -> Option[I]: ...
 
     @abstractmethod
     def expect(self, msg: str) -> Union[T, E]: ...
@@ -144,8 +144,8 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     @classmethod
     def into(cls, value):
-        if value is None: return none
-        elif isinstance(value, some) or value is none: return value
+        if value is None: return none()
+        elif isinstance(value, some) or isinstance(value, none): return value
         else: return some(value)
 
     @classmethod
@@ -211,19 +211,19 @@ class some(Option[I]):
         """
         return self.unwrap()
 
-    def map(self, fn: Callable[[I], R]) -> some[R]:
+    def map(self, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn
         """
         return some(fn(self.unwrap()))
 
-    def map_or(self, default: R, fn: Callable[[I], R]) -> some[R]:
+    def map_or(self, default: R, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn
         """
         return self.map(fn)
 
-    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> some[R]:
+    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn
         """
@@ -238,15 +238,11 @@ class some(Option[I]):
     def also(self, another):
         return another
 
-    def and_then(self, f):
-        res = f(self.T)
-        if res is none:
-            return none
-
-        return some(res)
+    def and_then(self, f: Callable[[I], Option[R]]) -> Option[R]:
+        return f(self.T)
 
     def filter(self, p: Callable[[I], bool]) -> Option[I]:
-        return self if p(self.T) else none
+        return self if p(self.T) else none()
         
 
     def otherwise(self, another):
@@ -255,42 +251,32 @@ class some(Option[I]):
     def or_else(self, f):
         return self
 
-    def xor(self, optb):
-        if optb is none:
+    # TODO verify
+    def xor(self, optb: Option[I]) -> Option[I]:
+        if optb.is_none():
             return self
         else:
-            return none
+            return none()
 
 
-    def zip(self, *others):
-        if len(others) < 1:
-            raise TypeError
-
-        if any(el is none for el in others):
-            return none
-
-        if any(not isinstance(el, some) for el in others):
-            raise TypeError('cannot zip non Option types')
-
-        return some((self.T, *(el.T for el in others )))
+    def zip(self, another: Option[U]) -> Option[Tuple[I, U]]:
+        if another.is_none():
+            return none()
+        else:
+            return some((self.unwrap(), another.unwrap()))
 
 
-    def zip_with(self, *others, f=None):
-        if len(others) < 1 or f is None:
-            raise TypeError
+    def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]:
+        if another.is_none():
+            return none()
+        else:
+            return some(fn(self.unwrap(), another.unwrap()))
 
-        if any(el is none for el in others):
-            return none
+    def copied(self) -> Option[I]:
+        from copy import deepcopy
+        return some(deepcopy(self.T))
 
-        if any(not isinstance(el, some) for el in others):
-            raise TypeError('cannot zip non Option types')
-
-        return some(f(self.T, *(el.T for el in others )))
-
-    def copied(self):
-        return some(self.T)
-
-    def cloned(self):
+    def cloned(self) -> Option[I]:
         return self.copied()
 
     def expect(self, msg):
@@ -320,10 +306,6 @@ class some(Option[I]):
 
 
 class none(Option[I]):
-    # keep none as a soft singleton, but also add subscriptability on the instance for type hinting
-    def __getitem__(self, t: Type[I]) -> none[I]:
-        return self
-
     def __bool__(self):
         return False
 
@@ -367,19 +349,19 @@ class none(Option[I]):
         """
         return fn()
 
-    def map(self, fn: Callable[[I], R]) -> none[I]:
+    def map(self, fn: Callable[[I], R]) -> Option[R]: # TODO try output none[R]
         """
             returns none
         """
-        return self
+        return none()
 
-    def map_or(self, default: R, fn: Callable[[I], R]) -> some[R]:
+    def map_or(self, default: R, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some default
         """
         return some(default)
 
-    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> some[R]:
+    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some result of calling default
         """
@@ -392,13 +374,13 @@ class none(Option[I]):
         return [].__iter__()
 
     def also(self, another):
-        return self
+        return none()
 
-    def and_then(self, f):
-        return self
+    def and_then(self, f: Callable[[I], Option[R]]) -> Option[R]:
+        return none()
 
-    def filter(self, p: Callable[[I], bool]) -> none:
-        return self
+    def filter(self, p: Callable[[I], bool]) -> Option[I]: # TODO try none[I]
+        return none()
 
     def otherwise(self, another):
         return another
@@ -406,23 +388,24 @@ class none(Option[I]):
     def or_else(self, f):
         return f()
 
-    def xor(self, optb):
-        if optb is not self:
+    # TODO verify
+    def xor(self, optb: Option[I]) -> Option[I]:
+        if optb.is_some():
             return optb
         else:
             return self
 
-    def zip(self, *others):
-        return self
+    def zip(self, another: Option[U]) -> Option[Tuple[I, U]]:
+        return none()
 
-    def zip_with(self, *others, f=None):
-        return self
+    def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]:
+        return none()
 
-    def copied(self):
-        return self
+    def copied(self) -> Option[I]:
+        return none()
 
-    def cloned(self):
-        return self
+    def cloned(self) -> Option[I]:
+        return none()
 
     def expect(self, msg):
         raise Panic(msg)
@@ -430,15 +413,13 @@ class none(Option[I]):
     def expect_none(self): ...
 
     def unwrap_none(self):
-        return self
+        return none()
 
     def unwrap_or_default(self, type):
         return type()
 
     def flatten(self, times = 1):
-        return self
+        return none()
 
     def if_some_do(self, f):
-        return self
-
-none = none()
+        return none()

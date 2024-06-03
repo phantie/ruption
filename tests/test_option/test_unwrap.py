@@ -10,14 +10,14 @@ def type_hinting():
         a.unwrap()
     a: Option[VALUE_TYPE] = ...
     a.unwrap()
-    lambda: none.unwrap()
-    lambda: none[VALUE_TYPE].unwrap()
+    lambda: none().unwrap()
+    lambda: none[VALUE_TYPE]().unwrap()
     some(VALUE).unwrap()
 
 def test_option_none_raises_option_noneValue_if_unwrap():
     import pytest
     with pytest.raises(Panic) as err:
-        none.unwrap()
+        none().unwrap()
 
     assert str(err.value) == 'called `Option.unwrap()` on a `none` value'
 

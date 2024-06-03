@@ -10,13 +10,13 @@ def type_hinting():
         a.is_none()
     a: Option[VALUE_TYPE] = ...
     a.is_none()
-    none.is_none()
-    none[VALUE_TYPE].is_none()
+    none().is_none()
+    none[VALUE_TYPE]().is_none()
     some(VALUE).is_none()
 
 
 def test_none_is_none():
-    assert none.is_none()
+    assert none().is_none()
 
 
 def test_some_is_not_none():

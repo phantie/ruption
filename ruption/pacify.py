@@ -22,7 +22,7 @@ def pacify_call(fn: Callable[[], R], *, log = True, log_fn = log_fn) -> Option[R
     except Exception as e:
         if log:
             log_fn(e)
-        return none
+        return none()
 
 
 def pacify_callable(

@@ -9,8 +9,8 @@ def type_hinting():
         a.filter()
     a: Option[int] = ...
     a.filter()
-    none.filter(lambda x: x > 0)
-    none[int].filter(lambda x: x > 0)
+    none().filter(lambda x: x > 0)
+    none[int]().filter(lambda x: x > 0)
     some(1).filter()
 
 
@@ -18,7 +18,7 @@ def type_hinting():
 def test_filter():
     not_zero = lambda n: n!=0
 
-    assert none.filter(not_zero) is none
-    assert some(0).filter(not_zero) is none
+    assert none().filter(not_zero).is_none()
+    assert some(0).filter(not_zero).is_none()
     assert some(96).filter(not_zero).filter(lambda n: n == 96) == some(96)
-    assert some(96).filter(not_zero).filter(lambda n: n > 101) is none
+    assert some(96).filter(not_zero).filter(lambda n: n > 101).is_none()
