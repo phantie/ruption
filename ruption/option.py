@@ -93,12 +93,22 @@ class Option(Generic[I], metaclass=ABCMeta):
     def _and(self, another: Option) -> Option:
         return self.also(another)
 
+    # TODO write tests
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.and_then
     @abstractmethod
-    def and_then(self, f: Callable[[I], Option[R]]) -> Option[R]: ...
+    def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:
+        """
+            returns fn applied to inner value if some
+            returns none if none
+        """
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.filter
     @abstractmethod
-    def filter(self, p: Callable[[I], bool]) -> Option[I]: ...
+    def filter(self, p: Callable[[I], bool]) -> Option[I]:
+        """
+            returns some inner value if predicate on inner value is true
+            returns none otherwise
+        """
 
     @abstractmethod
     def otherwise(self, another: Option) -> Option: ...
@@ -112,17 +122,39 @@ class Option(Generic[I], metaclass=ABCMeta):
     @abstractmethod
     def xor(self, optb: Option[I]) -> Option[I]: ...
 
+    # TODO write tests
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.zip
     @abstractmethod
-    def zip(self, another: Option[U]) -> Option[Tuple[I, U]]: ...
+    def zip(self, another: Option[U]) -> Option[Tuple[I, U]]:
+        """
+            returns some tuple of left inner value and right inner value if both are some
+            returns none otherwise
+        """
 
+    # TODO write tests
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.zip_with
     @abstractmethod
-    def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]: ...
+    def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]:
+        """
+            returns some result of fn called with left inner value and right inner value if both are some
+            returns none otherwise
+        """
 
+    # TODO write tests
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.copied
     @abstractmethod
-    def copied(self) -> Option[I]: ...
+    def copied(self) -> Option[I]:
+        """
+            returns deep copy of self
+        """
 
+    # TODO write tests
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.cloned
     @abstractmethod
-    def cloned(self) -> Option[I]: ...
+    def cloned(self) -> Option[I]:
+        """
+            returns deep copy of self
+        """
 
     @abstractmethod
     def expect(self, msg: str) -> Union[T, E]: ...
@@ -238,8 +270,8 @@ class some(Option[I]):
     def also(self, another):
         return another
 
-    def and_then(self, f: Callable[[I], Option[R]]) -> Option[R]:
-        return f(self.T)
+    def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:
+        return fn(self.T)
 
     def filter(self, p: Callable[[I], bool]) -> Option[I]:
         return self if p(self.T) else none()
@@ -376,7 +408,7 @@ class none(Option[I]):
     def also(self, another):
         return none()
 
-    def and_then(self, f: Callable[[I], Option[R]]) -> Option[R]:
+    def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:
         return none()
 
     def filter(self, p: Callable[[I], bool]) -> Option[I]: # TODO try none[I]
@@ -393,7 +425,7 @@ class none(Option[I]):
         if optb.is_some():
             return optb
         else:
-            return self
+            return none()
 
     def zip(self, another: Option[U]) -> Option[Tuple[I, U]]:
         return none()
