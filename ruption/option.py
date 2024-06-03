@@ -66,7 +66,7 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.map_or
     @abstractmethod
-    def map_or(self, default: R, fn: Callable[[I], R]) -> some[R]:
+    def map_or(self, default: R, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn if some
             returns some default if none
@@ -74,7 +74,7 @@ class Option(Generic[I], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.map_or_else
     @abstractmethod
-    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> some[R]:
+    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn if some
             returns some result of calling default if none
@@ -211,19 +211,19 @@ class some(Option[I]):
         """
         return self.unwrap()
 
-    def map(self, fn: Callable[[I], R]) -> some[R]:
+    def map(self, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn
         """
         return some(fn(self.unwrap()))
 
-    def map_or(self, default: R, fn: Callable[[I], R]) -> some[R]:
+    def map_or(self, default: R, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn
         """
         return self.map(fn)
 
-    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> some[R]:
+    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some value transformed with fn
         """
@@ -320,10 +320,6 @@ class some(Option[I]):
 
 
 class none(Option[I]):
-    # keep none as a soft singleton, but also add subscriptability on the instance for type hinting
-    def __getitem__(self, t: Type[I]) -> none[I]:
-        return self
-
     def __bool__(self):
         return False
 
@@ -367,19 +363,19 @@ class none(Option[I]):
         """
         return fn()
 
-    def map(self, fn: Callable[[I], R]) -> none[I]:
+    def map(self, fn: Callable[[I], R]) -> Option[R]: # TODO try output none[R]
         """
             returns none
         """
         return self
 
-    def map_or(self, default: R, fn: Callable[[I], R]) -> some[R]:
+    def map_or(self, default: R, fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some default
         """
         return some(default)
 
-    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> some[R]:
+    def map_or_else(self, default: Callable[[], R], fn: Callable[[I], R]) -> Option[R]: # TODO try output some[R]
         """
             returns some result of calling default
         """
