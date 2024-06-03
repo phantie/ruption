@@ -11,8 +11,8 @@ def type_hinting():
         a.map(lambda value: VALUE)
     a: Option[VALUE_TYPE] = ...
     a.map(lambda value: VALUE)
-    none.map(lambda value: VALUE)
-    none[int].map(lambda value: VALUE)
+    none().map(lambda value: VALUE)
+    none[int]().map(lambda value: VALUE)
 
     # check filter
     some(VALUE).map(map_value_to_other_type_value).filter()
@@ -25,5 +25,4 @@ def test_map_some_value_to_other_type_value():
     assert some(VALUE).map(map_value_to_other_type_value).contains(OTHER_TYPE_VALUE)
 
 def test_map_none():
-    # TODO for some reason is_none not active
-    assert none.map(map_value_to_other_type_value).is_none()
+    assert none().map(map_value_to_other_type_value).is_none()

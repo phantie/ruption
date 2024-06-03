@@ -11,8 +11,8 @@ def type_hinting():
         a.map_or_else(lambda: VALUE, lambda value: VALUE)
     a: Option[VALUE_TYPE] = ...
     a.map_or_else(lambda: VALUE, lambda value: VALUE)
-    none.map_or_else(lambda: VALUE, lambda value: VALUE)
-    none[int].map_or_else(lambda: VALUE, lambda value: VALUE)
+    none().map_or_else(lambda: VALUE, lambda value: VALUE)
+    none[int]().map_or_else(lambda: VALUE, lambda value: VALUE)
 
     # check filter
     some(VALUE).map_or_else(lambda: OTHER_TYPE_VALUE, map_value_to_other_type_value).filter()
@@ -25,5 +25,4 @@ def test_map_or_some_value_to_other_type_value():
     assert some(VALUE).map_or_else(..., map_value_to_other_type_value).contains(OTHER_TYPE_VALUE)
 
 def test_map_or_else_none():
-    # TODO for some reason contains not active
-    assert none.map_or_else(lambda: OTHER_TYPE_VALUE, ...).contains(OTHER_TYPE_VALUE)
+    assert none().map_or_else(lambda: OTHER_TYPE_VALUE, ...).contains(OTHER_TYPE_VALUE)

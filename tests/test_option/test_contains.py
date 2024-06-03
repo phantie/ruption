@@ -10,8 +10,8 @@ def type_hinting():
         a.contains(VALUE)
     a: Option[VALUE_TYPE] = ...
     a.contains(VALUE)
-    none.contains(VALUE)
-    none[int].contains(VALUE)
+    none().contains(VALUE)
+    none[int]().contains(VALUE)
     some(VALUE).contains(VALUE)
 
 
@@ -22,4 +22,4 @@ def test_some_value_does_not_contain_other_value():
     assert not some(VALUE).contains(OTHER_VALUE)
 
 def test_none_does_not_contain_value():
-    assert not none.contains(VALUE)
+    assert not none().contains(VALUE)

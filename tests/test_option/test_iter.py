@@ -10,8 +10,8 @@ def type_hinting():
         a.iter()
     a: Option[VALUE_TYPE] = ...
     a.iter()
-    none.iter()
-    none[int].iter()
+    none().iter()
+    none[int]().iter()
     some(VALUE).iter()
 
 
@@ -19,4 +19,4 @@ def test_iter_some():
     assert list(some(VALUE).iter()) == [VALUE]
 
 def test_iter_none():
-    assert list(none.iter()) == []
+    assert list(none().iter()) == []
