@@ -1,18 +1,20 @@
 """
-Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html .
-A step towards writing more reliable software in python.
+- Implements pacify module
+- Implements subset of [Option](https://doc.rust-lang.org/std/option/enum.Option.html) enum 
+- Implements subset of [Result](https://doc.rust-lang.org/std/result/enum.Result.html) enum
 
-Methods not suitable for python, regarding pointers, immutability, etc - are not implemented.
+Imports:
 
-Due to "None" being reserved, "Some and None" are renamed to "some and none".
+    from ruption.pacify import *
+    from ruption.option import Option, some, none
+    from ruption.result import Result, ok, err
+    from ruption.panic import Panic
+
     
-Install:
+Installation:
     
-    pip install git+https://github.com/phantie/ruption.git -U
+    pip install git+https://github.com/phantie/ruption.git
 
-Import:
-
-    from ruption import Option, some, none, Panic
 """
 
 from .panic import Panic
