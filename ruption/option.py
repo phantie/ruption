@@ -142,24 +142,9 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns none otherwise
         """
 
-    # TODO write tests
-    # https://doc.rust-lang.org/std/option/enum.Option.html#method.copied
-    @abstractmethod
-    def copied(self) -> Option[I]:
-        """
-            returns deep copy of self
-        """
 
     # TODO write tests
-    # https://doc.rust-lang.org/std/option/enum.Option.html#method.cloned
-    @abstractmethod
-    def cloned(self) -> Option[I]:
-        """
-            returns deep copy of self
-        """
-
-    # TODO write tests
-    # https://doc.rust-lang.org/std/option/enum.Option.html#method.cloned
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.expect
     @abstractmethod
     def expect(self, msg: str) -> I: ...
 
@@ -292,13 +277,6 @@ class some(Option[I]):
         else:
             return some(fn(self.unwrap(), another.unwrap()))
 
-    def copied(self) -> Option[I]:
-        from copy import deepcopy
-        return some(deepcopy(self.T))
-
-    def cloned(self) -> Option[I]:
-        return self.copied()
-
     def expect(self, msg: str) -> I:
         return self.unwrap()
 
@@ -407,12 +385,6 @@ class none(Option[I]):
         return none()
 
     def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]:
-        return none()
-
-    def copied(self) -> Option[I]:
-        return none()
-
-    def cloned(self) -> Option[I]:
         return none()
 
     def expect(self, msg: str) -> I:

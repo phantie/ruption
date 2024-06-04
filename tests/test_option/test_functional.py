@@ -110,14 +110,6 @@ def test_zip_with():
     assert x.zip_with(y, area) == some(2)
     assert x.zip_with(z, area).is_none
 
-def test_copied():
-    x = some('num')
-    y = x.copied()
-    assert not x is y
-
-    # there`s no point in actual copy of none. so it`s ommitted.
-    assert none().copied().is_none()
-
 
 def test_flatten():
     assert some(1) == some(some(1)).flatten()
