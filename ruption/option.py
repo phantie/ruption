@@ -165,9 +165,6 @@ class Option(Generic[I], metaclass=ABCMeta):
     def expect_none(self) -> Union[None, E]: ...
 
     @abstractmethod
-    def unwrap_none(self) -> Union[None, E]: ...
-
-    @abstractmethod
     def unwrap_or_default(self, type: Type) -> Union[T, R]: ...
 
     @abstractmethod
@@ -315,9 +312,6 @@ class some(Option[I]):
     def expect_none(self):
         raise Panic('value is ' + str(self))
 
-    def unwrap_none(self): 
-        raise self.expect_none()
-
     def unwrap_or_default(self, type):
         return self.unwrap()
 
@@ -441,9 +435,6 @@ class none(Option[I]):
         raise Panic(msg)
 
     def expect_none(self): ...
-
-    def unwrap_none(self):
-        return none()
 
     def unwrap_or_default(self, type):
         return type()
