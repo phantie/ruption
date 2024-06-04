@@ -158,8 +158,10 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns deep copy of self
         """
 
+    # TODO write tests
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.cloned
     @abstractmethod
-    def expect(self, msg: str) -> Union[T, E]: ...
+    def expect(self, msg: str) -> I: ...
 
     @abstractmethod
     def flatten(self, times = 1) -> Union[T, Option[T]]: ...
@@ -297,8 +299,8 @@ class some(Option[I]):
     def cloned(self) -> Option[I]:
         return self.copied()
 
-    def expect(self, msg):
-        return self.T
+    def expect(self, msg: str) -> I:
+        return self.unwrap()
 
     def flatten(self, times = 1):
         not_zero = times - 1
@@ -413,7 +415,7 @@ class none(Option[I]):
     def cloned(self) -> Option[I]:
         return none()
 
-    def expect(self, msg):
+    def expect(self, msg: str) -> I:
         raise Panic(msg)
 
     def flatten(self, times = 1):
