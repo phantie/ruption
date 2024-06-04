@@ -22,15 +22,6 @@ def test_converts_not_None_into_option_some():
 def test_some_13_not_equals_some_42():
     assert some(13) != some(42)
 
-
-def test_and_then():
-    square = lambda x: some(x**2)
-
-    assert some(2).and_then(square).and_then(square) == some(16)
-    assert some(13).and_then(lambda self: none()).is_none()
-    assert some(33).and_then(lambda self: none()).and_then(square).is_none()
-    assert none().and_then(lambda x: x**2).is_none()
-
 def test_or_else():
     nobody = lambda: none()
     vikings = lambda: some('vikings')

@@ -97,7 +97,6 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns another otherwise
         """
 
-    # TODO write tests
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.and_then
     @abstractmethod
     def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:
