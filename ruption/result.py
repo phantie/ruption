@@ -140,7 +140,7 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.iter
     @abstractmethod
-    def iter(self) -> Iterator[I]:
+    def iter(self) -> Iterator[Ok]:
         """
             returns iterator yielding inner value once if ok
             returns empty iterator if err
@@ -240,7 +240,7 @@ class ok(Result[Ok, Err]):
         assert isinstance(self.unwrap(), Result)
         return self.unwrap()
 
-    def iter(self) -> Iterator[I]:
+    def iter(self) -> Iterator[Ok]:
         return iter([self.unwrap()])
     
     def err(self) -> Option[Err]:
@@ -311,7 +311,7 @@ class err(Result[Ok, Err]):
     def flatten(self) -> Result[Ok, Err]:
         return self
 
-    def iter(self) -> Iterator[I]:
+    def iter(self) -> Iterator[Ok]:
         return iter([])
     
     def err(self) -> Option[Err]:
