@@ -1,5 +1,5 @@
-from ruption import *
-from util import *
+from imports import *
+
 
 def test_ok_unwrap_or_else():
     assert ok(VALUE).unwrap_or_else(lambda e: ...) == VALUE

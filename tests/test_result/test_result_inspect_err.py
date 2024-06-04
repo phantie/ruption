@@ -1,5 +1,6 @@
-from ruption import *
-from util import VALUE
+from imports import *
+
+
 
 def test_ok_inspect_err(capsys):
     ok(VALUE).inspect_err(lambda e: ...)

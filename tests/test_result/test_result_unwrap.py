@@ -1,5 +1,5 @@
-from ruption import *
-from util import VALUE
+from imports import *
+
 
 def test_ok_unwrap():
     assert ok(VALUE).unwrap() == VALUE

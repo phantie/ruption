@@ -1,5 +1,6 @@
-from ruption import *
-from util import VALUE
+from imports import *
+
+
 
 def test_ok_map_err():
     assert ok(VALUE).map_err(lambda e: ...).is_ok()

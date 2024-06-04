@@ -1,5 +1,5 @@
-from ruption import *
-from util import *
+from imports import *
+
 
 def test_ok_err():
     assert ok(VALUE).err().is_none()

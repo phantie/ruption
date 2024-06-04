@@ -1,4 +1,5 @@
-from ruption import *
+from imports import *
+
 
 def test_lift():
     def addOne(x):

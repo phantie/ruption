@@ -1,5 +1,6 @@
-from ruption import *
-from util import VALUE
+from imports import *
+
+
 
 def test_ok_map_or_else():
     assert ok(2).map_or_else(lambda e: 42, lambda v: v * 2) == 4

@@ -1,5 +1,4 @@
-from ruption import *
-from util import VALUE, OTHER_VALUE
+from imports import *
 
 
 def test_some_ok_or():

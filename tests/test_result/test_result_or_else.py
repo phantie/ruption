@@ -1,5 +1,6 @@
-from ruption import *
-from util import *
+from imports import *
+
+
 
 def sq(x: int) -> Result[int, int]:
     return ok(x * x)

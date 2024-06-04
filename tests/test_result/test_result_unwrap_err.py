@@ -1,5 +1,6 @@
-from ruption import *
-from util import VALUE
+from imports import *
+
+
 
 def test_ok_is_err():
     import pytest

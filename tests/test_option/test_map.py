@@ -1,5 +1,4 @@
-from ruption import *
-from util import VALUE, VALUE_TYPE, OTHER_VALUE, OTHER_TYPE, OTHER_TYPE_VALUE
+from imports import *
 
 
 def type_hinting():

@@ -1,6 +1,4 @@
-from util import VALUE, OTHER_VALUE
-from ruption import *
-
+from imports import *
 
 
 def test_or_else():

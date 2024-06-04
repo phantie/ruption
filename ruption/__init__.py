@@ -17,10 +17,8 @@ Installation:
 
 """
 
-from .panic import Panic
-from .option import *
-from .result import *
 
-__all__ = ['Panic', 'Option', 'some', 'none', 'Result', 'ok', 'err']
+
+__all__ = ["__version__"]
 __version__ = 1, 4, 1
 

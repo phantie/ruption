@@ -1,4 +1,4 @@
-from ruption import *
+from imports import *
 
 
 def type_hinting():
