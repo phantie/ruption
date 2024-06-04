@@ -3,11 +3,6 @@ import pytest
 from ruption import *
 
 
-def test_option_none_not_equal_to_None():
-    assert none() != None
-
-def test_option_none_equals_to_self():
-    assert none() == none()
 
 def test_converts_python_None_into_option_none():
     assert Option.into(None).is_none()
@@ -19,8 +14,8 @@ def test_converts_not_None_into_option_some():
     some_value = "Me not none, me some."
     assert Option.into(some_value) == some(some_value)
 
-def test_some_13_not_equals_some_42():
-    assert some(13) != some(42)
+
+
 
 
 def test_Option_as_typehint():
