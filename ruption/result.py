@@ -16,9 +16,6 @@ Err = TypeVar("Err")
 R = TypeVar("R")
 
 class Result(Generic[Ok, Err], metaclass=ABCMeta):
-    def __eq__(self, another):
-        return isinstance(another, self.__class__) and self.T == another.T
-
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap
     @abstractmethod
     def unwrap(self) -> Ok:
@@ -26,7 +23,6 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns inner value if ok
             panics if err
         """
-
 
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map
     @abstractmethod
@@ -196,6 +192,9 @@ class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
         self.T = value
 
+    def __eq__(self, another):
+        return isinstance(another, self.__class__) and self.unwrap() == another.unwrap()
+
     def unwrap(self) -> Ok:
         return self.T
     
@@ -264,6 +263,9 @@ class ok(Result[Ok, Err]):
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
+
+    def __eq__(self, another):
+        return isinstance(another, self.__class__) and self.unwrap_err() == another.unwrap_err()
 
     def unwrap(self) -> NoReturn:
         raise Panic("called .unwrap() on err")
