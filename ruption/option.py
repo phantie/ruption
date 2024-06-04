@@ -141,7 +141,6 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns none otherwise
         """
 
-    # TODO write tests
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.zip_with
     @abstractmethod
     def zip_with(self, another: Option[U], fn: Callable[[I, U], R]) -> Option[R]:
@@ -149,7 +148,6 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns some result of fn called with left inner value and right inner value if both are some
             returns none otherwise
         """
-
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.expect
     @abstractmethod

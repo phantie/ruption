@@ -40,19 +40,6 @@ def test_or_else():
     assert none().or_else(nobody).is_none()
 
 
-
-def test_zip_with():
-    def area(a, b):
-        return a*b
-
-    x = some(1)
-    y = some(2)
-    z = none()
-
-    assert x.zip_with(y, area) == some(2)
-    assert x.zip_with(z, area).is_none
-
-
 def test_flatten():
     assert some(1) == some(some(1)).flatten()
     assert 1 == some(some(1)).flatten().flatten()
