@@ -1,13 +1,18 @@
 
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
-from typing import Callable, Any, Iterator, Generic, Union, Tuple, Type, NoReturn, Literal
+from typing import Callable, Any, Iterator, Generic, Tuple, NoReturn, Literal, Callable, TypeVar
 
-from .typing import *
 from .panic import Panic
 
 
 __all__ = ['Option', 'some', 'none']
+
+
+I = TypeVar('I')            # inner value
+U = TypeVar('U')            # use with zip
+R = TypeVar('R')            # result
+
 
 class Option(Generic[I], metaclass=ABCMeta):
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap
