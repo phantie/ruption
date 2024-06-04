@@ -95,6 +95,16 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns ok value if some
             returns err result of fn calling on error if err
         """
+    
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.inspect_err
+    @abstractmethod
+    def inspect_err(self, fn: Callable[[Err], None]) -> Result[Ok, Err]:
+        """
+            calls fn on value if err
+            returns unmodified value
+            fn must not modify value
+        """
+
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -128,6 +138,9 @@ class ok(Result[Ok, Err]):
         return self.unwrap()
     
     def map_err(self, fn: Callable[[Err], R]) -> Result[Ok, R]:
+        return self
+    
+    def inspect_err(self, fn: Callable[[Err], None]) -> Result[Ok, Err]:
         return self
 
 class err(Result[Ok, Err]):
@@ -163,5 +176,9 @@ class err(Result[Ok, Err]):
 
     def map_err(self, fn: Callable[[Err], R]) -> Result[Ok, R]:
         return err(fn(self.unwrap_err()))
+    
+    def inspect_err(self, fn: Callable[[Err], None]) -> Result[Ok, Err]:
+        fn(self.unwrap_err())
+        return self
 
 from .option import Option, some, none
