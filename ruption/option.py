@@ -22,7 +22,8 @@ class Option(Generic[I], metaclass=ABCMeta):
     @abstractmethod
     def unwrap_or(self, default: I) -> I:
         """
-            returns inner value or default
+            returns inner value if some
+            return default if none
         """
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.is_none

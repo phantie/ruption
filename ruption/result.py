@@ -53,7 +53,7 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             panics if ok
         """
 
-    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap_err
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.expect
     @abstractmethod
     def expect(self, msg: str) -> Ok:
         """
@@ -68,6 +68,13 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             converts Result to Option discarding error
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap_or
+    @abstractmethod
+    def unwrap_or(self, default: Ok) -> Ok:
+        """
+            returns inner value if some
+            return default if none
+        """
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -93,6 +100,9 @@ class ok(Result[Ok, Err]):
 
     def ok(self) -> Option[Ok]:
         return some(self.unwrap())
+    
+    def unwrap_or(self, default: Ok) -> Ok:
+        return self.unwrap()
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -118,5 +128,8 @@ class err(Result[Ok, Err]):
 
     def ok(self) -> Option[Ok]:
         return none()
+
+    def unwrap_or(self, default: Ok) -> Ok:
+        return default
 
 from .option import Option, some, none

@@ -1,2 +1,3 @@
 VALUE = 42
 VALUE_TYPE = int
+OTHER_VALUE = 13
