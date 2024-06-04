@@ -1,26 +1,15 @@
-Implementation of Rusts Option Enum in python. https://doc.rust-lang.org/std/option/enum.Option.html .
-A step towards writing more reliable software in python.
+- Implements pacify module
+- Implements subset of [Option](https://doc.rust-lang.org/std/option/enum.Option.html) enum 
+- Implements subset of [Result](https://doc.rust-lang.org/std/result/enum.Result.html) enum
 
-Methods not suitable for python, regarding pointers, immutability, etc - ain`t implemented.
+Imports:
 
-Due to "None" being reserved, "Some and None" are renamed to "some and none".
+    from ruption.pacify import *
+    from ruption.option import Option, some, none
+    from ruption.result import Result, ok, err
+    from ruption.panic import Panic
 
-These methods are also renamed:
-
-    and: also / _and
-    or: otherwise / _or
-
-Changed func. signatures:
-
-    unwrap_or_default: added `type` argument because python cannot infer type
-    zip: no limits for positional arguments
-    zip_with: no limits for positional arguments, and required kw-only callable `f`
-    flatten: got `times` argument to flatten an object several times, .flatten(2) == .flatten().flatten()
     
-Install:
+Installation:
     
-    pip install git+https://github.com/phantie/ruption.git -U
-
-Import:
-
-    from ruption import Option, some, none, Panic
+    pip install git+https://github.com/phantie/ruption.git
