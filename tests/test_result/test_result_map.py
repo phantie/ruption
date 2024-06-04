@@ -12,8 +12,7 @@ def type_hinting():
     a.map(lambda value: VALUE)
     lambda: err(0).map(lambda value: VALUE).unwrap()
 
-    # check filter
-    some(VALUE).map(lambda x: x * 2).filter()
+    ok(VALUE).map(lambda x: x * 2).unwrap()
 
 
 

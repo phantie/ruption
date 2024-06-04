@@ -6,6 +6,7 @@ from typing import Callable, Any, Iterator, Generic, Union, Tuple, Type, NoRetur
 from .typing import *
 from .panic import Panic
 
+
 __all__ = ['Result', 'ok', 'err', 'Ok', 'Err']
 
 from typing import NewType, Callable, TypeVar, Any
@@ -59,6 +60,13 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns inner value if ok
             panics with msg if err
         """
+    
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.ok
+    @abstractmethod
+    def ok(self) -> Option[Ok]:
+        """
+            converts Result to Option discarding error
+        """
 
 
 class ok(Result[Ok, Err]):
@@ -83,6 +91,9 @@ class ok(Result[Ok, Err]):
     def expect(self, msg: str) -> Ok:
         return self.unwrap()
 
+    def ok(self) -> Option[Ok]:
+        return some(self.unwrap())
+
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
@@ -104,3 +115,8 @@ class err(Result[Ok, Err]):
 
     def expect(self, msg: str) -> Ok:
         raise Panic(msg)
+
+    def ok(self) -> Option[Ok]:
+        return none()
+
+from .option import Option, some, none

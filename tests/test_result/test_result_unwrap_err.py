@@ -1,5 +1,4 @@
-from ruption import Panic
-from ruption.result import *
+from ruption import *
 from util import VALUE
 
 def test_ok_is_err():

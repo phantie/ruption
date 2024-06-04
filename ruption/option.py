@@ -6,6 +6,7 @@ from typing import Callable, Any, Iterator, Generic, Union, Tuple, Type, NoRetur
 from .typing import *
 from .panic import Panic
 
+
 __all__ = ['Option', 'some', 'none']
 
 class Option(Generic[I], metaclass=ABCMeta):
@@ -455,3 +456,6 @@ class none(Option[I]):
 
     def if_some_do(self, f):
         return none()
+
+
+from .result import Result
