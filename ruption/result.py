@@ -114,6 +114,13 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             fn must not modify value
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.expect_err
+    @abstractmethod
+    def expect_err(self, msg: str) -> Err:
+        """
+            returns inner value if err
+            panics with msg if ok
+        """
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -155,6 +162,9 @@ class ok(Result[Ok, Err]):
     def inspect(self, fn: Callable[[Ok], None]) -> Result[Ok, Err]:
         fn(self.unwrap())
         return self
+    
+    def expect_err(self, msg: str) -> Err:
+        raise Panic(msg)
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -196,5 +206,8 @@ class err(Result[Ok, Err]):
     
     def inspect(self, fn: Callable[[Ok], None]) -> Result[Ok, Err]:
         return self
+    
+    def expect_err(self, msg: str) -> Err:
+        return self.unwrap_err()
 
 from .option import Option, some, none

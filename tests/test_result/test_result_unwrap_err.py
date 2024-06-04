@@ -3,7 +3,6 @@ from util import VALUE
 
 def test_ok_is_err():
     import pytest
-    import pytest
     with pytest.raises(Panic) as e:
         assert not ok(VALUE).unwrap_err()
 
