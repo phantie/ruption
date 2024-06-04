@@ -190,6 +190,9 @@ class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
         self.T = value
 
+    def __str__(self):
+        return f'Result.ok({self.unwrap()!r})'
+
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.unwrap() == another.unwrap()
 
@@ -261,6 +264,9 @@ class ok(Result[Ok, Err]):
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
+
+    def __str__(self):
+        return f'Result.err({self.unwrap_err()!r})'
 
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.unwrap_err() == another.unwrap_err()
