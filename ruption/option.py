@@ -172,6 +172,14 @@ class Option(Generic[I], metaclass=ABCMeta):
                 for example on some value
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.ok_or
+    @abstractmethod
+    def ok_or(self, error: Err) -> Result[I, Err]:
+        """
+            returns ok value if some
+            returns err error if none
+        """
+
     @classmethod
     def into(cls, value):
         if value is None: return none()
@@ -205,6 +213,9 @@ class some(Option[I]):
 
     def __repr__(self):
         return str(self)
+    
+    def __eq__(self, another):
+        return isinstance(another, self.__class__) and self.T == another.T
 
     def unwrap(self) -> I:
         """returns inner value"""
@@ -304,8 +315,8 @@ class some(Option[I]):
         assert isinstance(self.unwrap(), Option)
         return self.unwrap()
 
-    def __eq__(self, another):
-        return isinstance(another, self.__class__) and self.T == another.T
+    def ok_or(self, error: Err) -> Result[I, Err]:
+        return ok(self.unwrap())
 
 
 class none(Option[I]):
@@ -317,6 +328,9 @@ class none(Option[I]):
 
     def __repr__(self):
         return str(self)
+
+    def __eq__(self, another):
+        return isinstance(another, self.__class__)
 
     def unwrap(self) -> NoReturn:
         """panics"""
@@ -405,9 +419,9 @@ class none(Option[I]):
 
     def flatten(self) -> Option[I]:
         return none()
+    
+    def ok_or(self, error: Err) -> Result[I, Err]:
+        return err(error)
 
-    def __eq__(self, another):
-        return isinstance(another, self.__class__)
 
-
-from .result import Result
+from .result import Result, Ok, Err, ok, err
