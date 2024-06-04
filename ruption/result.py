@@ -142,6 +142,13 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns err value if err
         """
 
+    @abstractmethod
+    def iter(self) -> Iterator[I]:
+        """
+            returns iterator yielding inner value once if ok
+            returns empty iterator if err
+        """
+
 
 
 class ok(Result[Ok, Err]):
@@ -195,6 +202,9 @@ class ok(Result[Ok, Err]):
         assert isinstance(self.unwrap(), Result)
         return self.unwrap()
 
+    def iter(self) -> Iterator[I]:
+        return iter([self.unwrap()])
+
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
@@ -244,5 +254,8 @@ class err(Result[Ok, Err]):
 
     def flatten(self) -> Result[Ok, Err]:
         return self
+
+    def iter(self) -> Iterator[I]:
+        return iter([])
 
 from .option import Option, some, none
