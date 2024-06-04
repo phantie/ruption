@@ -158,6 +158,14 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             converts Result to Option discarding ok value
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.is_err_and
+    @abstractmethod
+    def is_err_and(self, fn: Callable[[Err], bool]) -> bool:
+        """
+            returns true if err and result of fn calling on value is true
+            returns false otherwise
+        """
+
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -215,6 +223,9 @@ class ok(Result[Ok, Err]):
     
     def err(self) -> Option[Err]:
         return none()
+    
+    def is_err_and(self, fn: Callable[[Err], bool]) -> bool:
+        return False
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -271,5 +282,8 @@ class err(Result[Ok, Err]):
     
     def err(self) -> Option[Err]:
         return some(self.unwrap_err())
+
+    def is_err_and(self, fn: Callable[[Err], bool]) -> bool:
+        return fn(self.unwrap_err())
 
 from .option import Option, some, none
