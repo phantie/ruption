@@ -122,6 +122,14 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             panics with msg if ok
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.is_ok_and
+    @abstractmethod
+    def is_ok_and(self, fn: Callable[[Ok], bool]) -> bool:
+        """
+            returns true if ok and result of fn calling on value is true
+            returns false otherwise
+        """
+
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
         self.T = value
@@ -166,6 +174,9 @@ class ok(Result[Ok, Err]):
     def expect_err(self, msg: str) -> Err:
         raise Panic(msg)
 
+    def is_ok_and(self, fn: Callable[[Ok], bool]) -> bool:
+        return fn(self.unwrap())
+
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
@@ -209,5 +220,8 @@ class err(Result[Ok, Err]):
     
     def expect_err(self, msg: str) -> Err:
         return self.unwrap_err()
+
+    def is_ok_and(self, fn: Callable[[Ok], bool]) -> bool:
+        return False
 
 from .option import Option, some, none
