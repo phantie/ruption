@@ -6,17 +6,10 @@ Methods not suitable for python, regarding pointers, immutability, etc - are not
 
 Due to "None" being reserved, "Some and None" are renamed to "some and none".
 
-These methods are also renamed:
+Renamed methods:
 
     and: also / _and
     or: otherwise / _or
-
-Changed func. signatures:
-
-    unwrap_or_default: added `type` argument because python cannot infer type
-    zip: no limits for positional arguments
-    zip_with: no limits for positional arguments, and required kw-only callable `f`
-    flatten: got `times` argument to flatten an object several times, .flatten(2) == .flatten().flatten()
     
 Install:
     

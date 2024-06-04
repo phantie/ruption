@@ -125,11 +125,6 @@ def test_expect_none():
 
     assert none().expect_none() is None
 
-def test_unwrap_or_default():
-    assert some(1).unwrap_or_default(int) == 1
-    assert none().unwrap_or_default(int) == 0
-    assert none().unwrap_or_default(list) == []
-
 def test_flatten():
     assert some(1) == some(some(1)).flatten()
     assert 1 == some(some(1)).flatten().flatten()

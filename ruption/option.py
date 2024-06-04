@@ -165,9 +165,6 @@ class Option(Generic[I], metaclass=ABCMeta):
     def expect_none(self) -> Union[None, E]: ...
 
     @abstractmethod
-    def unwrap_or_default(self, type: Type) -> Union[T, R]: ...
-
-    @abstractmethod
     def flatten(self, times = 1) -> Union[T, Option[T]]: ...
 
     @classmethod
@@ -309,9 +306,6 @@ class some(Option[I]):
     def expect_none(self):
         raise Panic('value is ' + str(self))
 
-    def unwrap_or_default(self, type):
-        return self.unwrap()
-
     def flatten(self, times = 1):
         not_zero = times - 1
         if not_zero:
@@ -429,9 +423,6 @@ class none(Option[I]):
         raise Panic(msg)
 
     def expect_none(self): ...
-
-    def unwrap_or_default(self, type):
-        return type()
 
     def flatten(self, times = 1):
         return none()
