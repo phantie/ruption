@@ -75,6 +75,14 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns inner value if some
             return default if none
         """
+    
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap_or_else
+    @abstractmethod
+    def unwrap_or_else(self, fn: Callable[[Err], Ok]) -> Ok:
+        """
+            returns inner value if some
+            returns result of fn calling on error if err
+        """
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -104,6 +112,9 @@ class ok(Result[Ok, Err]):
     def unwrap_or(self, default: Ok) -> Ok:
         return self.unwrap()
 
+    def unwrap_or_else(self, fn: Callable[[Err], Ok]) -> Ok:
+        return self.unwrap()
+
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
@@ -131,5 +142,8 @@ class err(Result[Ok, Err]):
 
     def unwrap_or(self, default: Ok) -> Ok:
         return default
+    
+    def unwrap_or_else(self, fn: Callable[[Err], Ok]) -> Ok:
+        return fn(self.unwrap_err())
 
 from .option import Option, some, none
