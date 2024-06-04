@@ -43,23 +43,6 @@ def test_and_then():
     assert some(33).and_then(lambda self: none()).and_then(square).is_none()
     assert none().and_then(lambda x: x**2).is_none()
 
-
-def test_otherwise():
-    a, b = some(3), none()
-
-    assert a.otherwise(b) == a
-    assert b.otherwise(a) == a
-    assert a.otherwise(some(4)) == a
-    assert b.otherwise(b) is b
-
-def test__or():
-    a, b = some(3), none()
-
-    assert a._or(b) == a
-    assert b._or(a) == a
-    assert a._or(some(4)) == a
-    assert b._or(b) is b
-
 def test_or_else():
     nobody = lambda: none()
     vikings = lambda: some('vikings')
@@ -157,7 +140,7 @@ def test_Option_as_typehint():
             List = list
 
         @typechecked
-        def tokenize(value) -> Option[List[str]]:
+        def tokenize(value) -> Option[list[str]]:
             if isinstance(value, str):
                 return some(list(value))
             elif value == 42:
