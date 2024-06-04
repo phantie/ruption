@@ -192,6 +192,9 @@ class ok(Result[Ok, Err]):
 
     def __str__(self):
         return f'Result.ok({self.unwrap()!r})'
+    
+    def __repr__(self):
+        return str(self)
 
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.unwrap() == another.unwrap()
@@ -267,6 +270,9 @@ class err(Result[Ok, Err]):
 
     def __str__(self):
         return f'Result.err({self.unwrap_err()!r})'
+    
+    def __repr__(self):
+        return str(self)
 
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.unwrap_err() == another.unwrap_err()
