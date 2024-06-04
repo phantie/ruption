@@ -152,10 +152,13 @@ class Option(Generic[I], metaclass=ABCMeta):
         """
 
 
-    # TODO write tests
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.expect
     @abstractmethod
-    def expect(self, msg: str) -> I: ...
+    def expect(self, msg: str) -> I:
+        """
+            returns inner value if some
+            panics with msg if none
+        """
 
     @abstractmethod
     def flatten(self, times = 1) -> Union[T, Option[T]]: ...

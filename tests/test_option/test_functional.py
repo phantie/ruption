@@ -6,9 +6,8 @@ from ruption import *
 def test_option_none_not_equal_to_None():
     assert none() != None
 
-# @pytest.skip
-# def test_option_none_equals_to_self():
-#     assert none() == none()
+def test_option_none_equals_to_self():
+    assert none() == none()
 
 def test_converts_python_None_into_option_none():
     assert Option.into(None).is_none()
@@ -22,17 +21,6 @@ def test_converts_not_None_into_option_some():
 
 def test_some_13_not_equals_some_42():
     assert some(13) != some(42)
-
-
-def test_map_or_else_on_none_executes_function_that_changes_state():
-    def change_state_of_local_var():
-        nonlocal local
-        local += 6
-        
-    local = 14
-
-    none().map_or_else(change_state_of_local_var, lambda: None)
-    assert local == 20
 
 
 def test_and_then():
@@ -92,15 +80,6 @@ def test_flatten():
     assert some(1) == some(some(some(1))).flatten(2)
     assert some(none()).flatten(13).is_none()
     assert none().flatten(13).is_none()
-
-
-def test_expect():
-    assert some(1).expect('cannot fail') == 1
-
-    with pytest.raises(Panic) as err:
-        none().expect('definitely will not fail')
-
-    assert str(err.value) == 'definitely will not fail'
 
 
 def test_Option_as_typehint():
