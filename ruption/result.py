@@ -138,8 +138,10 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
     def flatten(self) -> Result[Ok, Err]:
         """
             returns ok value if ok ok value
+            returns err value if ok err value
             returns err value if err
-            assertion error if not called on ok ok value or err value
+            assertion error if not called on ok ok value or ok err value or err value
+                for example on ok value
         """
 
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.iter

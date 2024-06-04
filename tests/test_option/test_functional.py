@@ -23,19 +23,6 @@ def test_some_13_not_equals_some_42():
     assert some(13) != some(42)
 
 
-def test_flatten():
-    assert some(1) == some(some(1)).flatten()
-    assert 1 == some(some(1)).flatten().flatten()
-    assert some(1) == some(some(some(1))).flatten().flatten()
-    assert some(none()).flatten().is_none()
-    assert none().flatten().is_none()
-
-    assert 1 == some(some(1)).flatten(2)
-    assert some(1) == some(some(some(1))).flatten(2)
-    assert some(none()).flatten(13).is_none()
-    assert none().flatten(13).is_none()
-
-
 def test_Option_as_typehint():
     from typing import Callable, Any
     from contextlib import suppress

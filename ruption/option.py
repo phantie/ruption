@@ -161,8 +161,16 @@ class Option(Generic[I], metaclass=ABCMeta):
             panics with msg if none
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.flatten
     @abstractmethod
-    def flatten(self, times = 1) -> Union[T, Option[T]]: ...
+    def flatten(self) -> Option[I]: 
+        """
+            returns some value if some some value
+            returns none if some none
+            returns none value if none
+            assertion error if not called on some some value or some none or none
+                for example on some value
+        """
 
     @classmethod
     def into(cls, value):
@@ -292,15 +300,9 @@ class some(Option[I]):
     def expect(self, msg: str) -> I:
         return self.unwrap()
 
-    def flatten(self, times = 1):
-        not_zero = times - 1
-        if not_zero:
-            result = self.flatten()
-            for i in range(not_zero):
-                result = result.flatten()
-            return result
-        else:
-            return self.T
+    def flatten(self) -> Option[I]:
+        assert isinstance(self.unwrap(), Option)
+        return self.unwrap()
 
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.T == another.T
@@ -401,7 +403,7 @@ class none(Option[I]):
     def expect(self, msg: str) -> I:
         raise Panic(msg)
 
-    def flatten(self, times = 1):
+    def flatten(self) -> Option[I]:
         return none()
 
     def __eq__(self, another):
