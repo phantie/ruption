@@ -23,12 +23,20 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
     @abstractmethod
     def map(self, fn: Callable[[Ok], R]) -> Result[R, Err]: ...
     
-    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.is_ok
     @abstractmethod
     def is_ok(self) -> bool:
         """
             returns true if ok
             returns false if err
+        """
+
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.is_err
+    @abstractmethod
+    def is_err(self) -> bool:
+        """
+            returns true if err
+            returns false if ok
         """
 
 
@@ -44,6 +52,9 @@ class ok(Result[Ok, Err]):
 
     def is_ok(self) -> bool:
         return True
+    
+    def is_err(self) -> bool:
+        return False
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -57,3 +68,6 @@ class err(Result[Ok, Err]):
 
     def is_ok(self) -> bool:
         return False
+
+    def is_err(self) -> bool:
+        return True
