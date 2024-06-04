@@ -44,12 +44,20 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns false if ok
         """
 
-    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap_err
     @abstractmethod
     def unwrap_err(self) -> Err:
         """
             returns inner value if err
             panics if ok
+        """
+
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap_err
+    @abstractmethod
+    def expect(self, msg: str) -> Ok:
+        """
+            returns inner value if ok
+            panics with msg if err
         """
 
 
@@ -71,6 +79,9 @@ class ok(Result[Ok, Err]):
     
     def unwrap_err(self) -> NoReturn:
         raise Panic("called .unwrap_err() on ok")
+    
+    def expect(self, msg: str) -> Ok:
+        return self.unwrap()
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -90,3 +101,6 @@ class err(Result[Ok, Err]):
     
     def unwrap_err(self) -> Err:
         return self.T
+
+    def expect(self, msg: str) -> Ok:
+        raise Panic(msg)

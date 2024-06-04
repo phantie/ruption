@@ -1,1 +1,2 @@
 VALUE = 42
+VALUE_TYPE = int

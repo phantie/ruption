@@ -1,7 +1,5 @@
 from ruption import *
-VALUE = 1
-VALUE_TYPE = int
-
+from util import VALUE, VALUE_TYPE
 
 def type_hinting():
     """Quickly check generated typehints by hovering over called method name"""
