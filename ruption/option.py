@@ -121,8 +121,13 @@ class Option(Generic[I], metaclass=ABCMeta):
             return none otherwise
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.or_else
     @abstractmethod
-    def or_else(self, f: Callable[[], R]) -> Union[T, R]: ...
+    def or_else(self, fn: Callable[[], Option[I]]) -> Option[I]:
+        """
+            returns some value if some
+            returns result of calling fn if none
+        """
 
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.xor
     @abstractmethod
@@ -261,7 +266,7 @@ class some(Option[I]):
     def or_(self, another: Option[I]) -> Option[I]:
         return self
 
-    def or_else(self, f):
+    def or_else(self, fn: Callable[[], Option[I]]) -> Option[I]:
         return self
 
     def xor(self, optb: Option[I]) -> Option[I]:
@@ -378,8 +383,8 @@ class none(Option[I]):
     def or_(self, another: Option[I]) -> Option[I]:
         return another
 
-    def or_else(self, f):
-        return f()
+    def or_else(self, fn: Callable[[], Option[I]]) -> Option[I]:
+        return fn()
 
     def xor(self, optb: Option[I]) -> Option[I]:
         if optb.is_some():
