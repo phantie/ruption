@@ -138,8 +138,8 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
     def flatten(self) -> Result[Ok, Err]:
         """
             returns ok value if ok ok value
-            returns value if called on ok value
             returns err value if err
+            assertion error if not called on ok ok value or err value
         """
 
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.iter
@@ -162,7 +162,7 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
     @abstractmethod
     def is_err_and(self, fn: Callable[[Err], bool]) -> bool:
         """
-            returns true if err and result of fn calling on value is true
+            returns true if err and result of calling fn on value is true
             returns false otherwise
         """
 
@@ -170,8 +170,16 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
     @abstractmethod
     def map_or(self, default: R, fn: Callable[[Ok], R]) -> R:
         """
-            returns value transformed with fn if some
-            returns default if none
+            returns result of calling fn on value if ok
+            returns default if err
+        """
+    
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map_or_else
+    @abstractmethod
+    def map_or_else(self, default: Callable[[Err], R], fn: Callable[[Ok], R]) -> R:
+        """
+            returns result of calling fn on value if ok
+            returns result of calling default on value if err
         """
 
 class ok(Result[Ok, Err]):
@@ -237,6 +245,9 @@ class ok(Result[Ok, Err]):
     def map_or(self, default: R, fn: Callable[[Ok], R]) -> R:
         return fn(self.unwrap())
 
+    def map_or_else(self, default: Callable[[Err], R], fn: Callable[[Ok], R]) -> R:
+        return fn(self.unwrap())
+
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
@@ -298,5 +309,8 @@ class err(Result[Ok, Err]):
 
     def map_or(self, default: R, fn: Callable[[Ok], R]) -> R:
         return default
+    
+    def map_or_else(self, default: Callable[[Err], R], fn: Callable[[Ok], R]) -> R:
+        return default(self.unwrap_err())
 
 from .option import Option, some, none
