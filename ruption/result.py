@@ -17,7 +17,12 @@ R = TypeVar("R")
 class Result(Generic[Ok, Err], metaclass=ABCMeta):
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap
     @abstractmethod
-    def unwrap(self) -> Ok: ...
+    def unwrap(self) -> Ok:
+        """
+            returns inner value if ok
+            panics if err
+        """
+
 
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map
     @abstractmethod
@@ -39,6 +44,14 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns false if ok
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap
+    @abstractmethod
+    def unwrap_err(self) -> Err:
+        """
+            returns inner value if err
+            panics if ok
+        """
+
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -55,13 +68,16 @@ class ok(Result[Ok, Err]):
     
     def is_err(self) -> bool:
         return False
+    
+    def unwrap_err(self) -> NoReturn:
+        raise Panic("called .unwrap_err() on ok")
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
 
     def unwrap(self) -> NoReturn:
-        raise Panic(self.T)
+        raise Panic("called .unwrap() on err")
 
     def map(self, fn: Callable[[Ok], R]) -> Result[R, Err]:
         return self
@@ -71,3 +87,6 @@ class err(Result[Ok, Err]):
 
     def is_err(self) -> bool:
         return True
+    
+    def unwrap_err(self) -> Err:
+        return self.T
