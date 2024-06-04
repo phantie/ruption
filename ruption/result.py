@@ -1,15 +1,13 @@
 
 from __future__ import annotations
 from abc import abstractmethod, ABCMeta
-from typing import Callable, Any, Iterator, Generic, Union, Tuple, Type, NoReturn, Literal
+from typing import Callable, Iterator, Generic, NoReturn, TypeVar
 
-from .typing import *
 from .panic import Panic
 
 
 __all__ = ['Result', 'ok', 'err', 'Ok', 'Err']
 
-from typing import NewType, Callable, TypeVar, Any
 
 Ok = TypeVar("Ok")
 Err = TypeVar("Err")
