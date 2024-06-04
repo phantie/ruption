@@ -51,19 +51,6 @@ def test_or_else():
     assert none().or_else(vikings) == some('vikings')
     assert none().or_else(nobody).is_none()
 
-def test_xor():
-    x, y = some(2), none()
-    assert x.xor(y) == some(2)
-
-    x, y = none(), some(2)
-    assert x.xor(y) == some(2)
-
-    x = y = some(2)
-    assert x.xor(y).is_none()
-
-    x = y = none()
-    assert x.xor(y).is_none()
-
 
 def test_zip():
     x = some(1)

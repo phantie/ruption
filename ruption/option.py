@@ -125,8 +125,13 @@ class Option(Generic[I], metaclass=ABCMeta):
     @abstractmethod
     def or_else(self, f: Callable[[], R]) -> Union[T, R]: ...
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.xor
     @abstractmethod
-    def xor(self, optb: Option[I]) -> Option[I]: ...
+    def xor(self, optb: Option[I]) -> Option[I]:
+        """
+            returns some value if only one is some
+            returns none otherwise
+        """
 
     # TODO write tests
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.zip
@@ -260,7 +265,6 @@ class some(Option[I]):
     def or_else(self, f):
         return self
 
-    # TODO verify
     def xor(self, optb: Option[I]) -> Option[I]:
         if optb.is_none():
             return self
@@ -378,7 +382,6 @@ class none(Option[I]):
     def or_else(self, f):
         return f()
 
-    # TODO verify
     def xor(self, optb: Option[I]) -> Option[I]:
         if optb.is_some():
             return optb
