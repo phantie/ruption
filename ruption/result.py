@@ -137,7 +137,8 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
     @abstractmethod
     def flatten(self) -> Result[Ok, Err]:
         """
-            returns 
+            returns ok value if ok ok value
+            returns value if called on ok value
             returns err value if err
         """
 
@@ -190,16 +191,9 @@ class ok(Result[Ok, Err]):
     def is_ok_and(self, fn: Callable[[Ok], bool]) -> bool:
         return fn(self.unwrap())
 
-    def flatten(self, safe = False) -> Result[Ok, Err]:
-        # originally you would not be able to call flatten if self was not Result[Result[Ok, Err], Err]
-        # here a safe parameter is introduced as experiment
-        if safe:
-            if isinstance(self.unwrap(), ok):
-                return self.unwrap()
-            else:
-                return self
-        else:
-            return self.unwrap()
+    def flatten(self) -> Result[Ok, Err]:
+        assert isinstance(self.unwrap(), Result)
+        return self.unwrap()
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
