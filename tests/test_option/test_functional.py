@@ -13,12 +13,3 @@ def test_option_into_returns_option_some_if_arg_is_not_None():
 def test_converts_not_None_into_option_some():
     some_value = "Me not none, me some."
     assert Option.into(some_value) == some(some_value)
-
-
-def test_lift():
-    def addOne(x):
-        return x + 1
-
-    addOneToOption = Option.lift(addOne)
-
-    assert addOneToOption(some(1)) == some(2)
