@@ -104,6 +104,15 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns unmodified value
             fn must not modify value
         """
+    
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.inspect
+    @abstractmethod
+    def inspect(self, fn: Callable[[Ok], None]) -> Result[Ok, Err]:
+        """
+            calls fn on value if some
+            returns unmodified value
+            fn must not modify value
+        """
 
 
 class ok(Result[Ok, Err]):
@@ -142,6 +151,10 @@ class ok(Result[Ok, Err]):
     
     def inspect_err(self, fn: Callable[[Err], None]) -> Result[Ok, Err]:
         return self
+    
+    def inspect(self, fn: Callable[[Ok], None]) -> Result[Ok, Err]:
+        fn(self.unwrap())
+        return self
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -179,6 +192,9 @@ class err(Result[Ok, Err]):
     
     def inspect_err(self, fn: Callable[[Err], None]) -> Result[Ok, Err]:
         fn(self.unwrap_err())
+        return self
+    
+    def inspect(self, fn: Callable[[Ok], None]) -> Result[Ok, Err]:
         return self
 
 from .option import Option, some, none
