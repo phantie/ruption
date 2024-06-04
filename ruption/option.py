@@ -209,13 +209,13 @@ class some(Option[I]):
         self.T = value
 
     def __str__(self):
-        return f'Option.some({self.T !r})'
+        return f'Option.some({self.unwrap() !r})'
 
     def __repr__(self):
         return str(self)
     
     def __eq__(self, another):
-        return isinstance(another, self.__class__) and self.T == another.T
+        return isinstance(another, self.__class__) and self.unwrap() == another.unwrap()
 
     def unwrap(self) -> I:
         """returns inner value"""
@@ -240,7 +240,7 @@ class some(Option[I]):
         """
             returns true if inner value equals to cmp
         """
-        return self.T == cmp
+        return self.unwrap() == cmp
 
     def unwrap_or_else(self, fn: Callable[[], I]) -> I:
         """
@@ -276,10 +276,10 @@ class some(Option[I]):
         return another
 
     def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:
-        return fn(self.T)
+        return fn(self.unwrap())
 
     def filter(self, p: Callable[[I], bool]) -> Option[I]:
-        return self if p(self.T) else none()
+        return self if p(self.unwrap()) else none()
         
 
     def or_(self, another: Option[I]) -> Option[I]:
