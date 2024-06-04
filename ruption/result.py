@@ -142,6 +142,7 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns err value if err
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.iter
     @abstractmethod
     def iter(self) -> Iterator[I]:
         """
@@ -149,6 +150,13 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns empty iterator if err
         """
 
+   
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.err
+    @abstractmethod
+    def err(self) -> Option[Err]:
+        """
+            converts Result to Option discarding ok value
+        """
 
 
 class ok(Result[Ok, Err]):
@@ -204,6 +212,9 @@ class ok(Result[Ok, Err]):
 
     def iter(self) -> Iterator[I]:
         return iter([self.unwrap()])
+    
+    def err(self) -> Option[Err]:
+        return none()
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -257,5 +268,8 @@ class err(Result[Ok, Err]):
 
     def iter(self) -> Iterator[I]:
         return iter([])
+    
+    def err(self) -> Option[Err]:
+        return some(self.unwrap_err())
 
 from .option import Option, some, none

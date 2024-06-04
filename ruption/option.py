@@ -200,9 +200,6 @@ class Option(Generic[I], metaclass=ABCMeta):
 
         return wrap
 
-    def __eq__(self, another):
-        return isinstance(another, self.__class__) and self.T == another.T
-
 class some(Option[I]):
     def __init__(self, value: I):
         self.T = value
@@ -337,6 +334,9 @@ class some(Option[I]):
     def if_some_do(self, f):
         return f(self.T)
 
+    def __eq__(self, another):
+        return isinstance(another, self.__class__) and self.T == another.T
+
 
 class none(Option[I]):
     def __bool__(self):
@@ -453,6 +453,9 @@ class none(Option[I]):
 
     def if_some_do(self, f):
         return none()
+
+    def __eq__(self, another):
+        return isinstance(another, self.__class__)
 
 
 from .result import Result
