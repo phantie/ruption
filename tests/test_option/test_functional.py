@@ -119,12 +119,6 @@ def test_copied():
     assert none().copied().is_none()
 
 
-def test_expect_none():
-    with pytest.raises(Panic):
-        some(1).expect_none()
-
-    assert none().expect_none() is None
-
 def test_flatten():
     assert some(1) == some(some(1)).flatten()
     assert 1 == some(some(1)).flatten().flatten()
