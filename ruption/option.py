@@ -170,9 +170,6 @@ class Option(Generic[I], metaclass=ABCMeta):
     @abstractmethod
     def flatten(self, times = 1) -> Union[T, Option[T]]: ...
 
-    @abstractmethod
-    def if_some_do(self, f: Callable[[T], R]) -> Union[R, none]: ...
-
     @classmethod
     def into(cls, value):
         if value is None: return none()
@@ -325,9 +322,6 @@ class some(Option[I]):
         else:
             return self.T
 
-    def if_some_do(self, f):
-        return f(self.T)
-
     def __eq__(self, another):
         return isinstance(another, self.__class__) and self.T == another.T
 
@@ -440,9 +434,6 @@ class none(Option[I]):
         return type()
 
     def flatten(self, times = 1):
-        return none()
-
-    def if_some_do(self, f):
         return none()
 
     def __eq__(self, another):

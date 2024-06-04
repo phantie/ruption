@@ -237,19 +237,6 @@ def test_Option_as_typehint():
         if False:
             assert tokenize(13) == some(13) # does not throw an error because it yet cannot typecheck the inner value
 
-def test_if_some_do():
-    assert (some(20)
-                .if_some_do(lambda _: _ / 2)) == 10
-
-    assert (none()
-                .if_some_do(lambda _: _ * 2)).is_none()
-
-    assert (some(10)
-                .if_some_do(lambda _: some(_ / 2))
-                .if_some_do(lambda _: some(_ - 10))
-                .if_some_do(lambda _: some(_ + 5))
-                .unwrap()) \
-                    == 0
 
 def test_lift():
     def addOne(x):
