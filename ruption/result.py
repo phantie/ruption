@@ -6,7 +6,7 @@ from typing import Callable, Any, Iterator, Generic, Union, Tuple, Type, NoRetur
 from .typing import *
 from .panic import Panic
 
-__all__ = ['Result', 'ok', 'err']
+__all__ = ['Result', 'ok', 'err', 'Ok', 'Err']
 
 from typing import NewType, Callable, TypeVar, Any
 

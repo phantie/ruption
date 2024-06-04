@@ -1,9 +1,17 @@
 
 
 from typing import Callable, TypeVar
-from numbers import Number
 import functools
 from .option import some, none, Option
+from .result import ok, err, Result, Err
+
+__all__ = [
+    "pacify_call",
+    "pacify_callable",
+    "pacify_call_result",
+    "pacify_callable_result",
+]
+
 
 R = TypeVar('R')
 
@@ -40,4 +48,26 @@ def pacify_callable(
             return pacify_call(lambda: func(*args, **kwargs), log = log, log_fn = log_fn)
         return wrapper
     return pacify_callable
+
+
+def pacify_call_result(fn: Callable[[], R]) -> Result[R, Err]:
+    try:
+        return ok(fn())
+    except Exception as e:
+        return err(e)
+
+
+def pacify_callable_result() \
+    -> Callable[[Callable[..., R]], Callable[..., Result[R, Err]]]:
+
+    def pacify_callable_result(func: Callable[..., R]) -> Callable[..., Result[R, Err]]:
+        """Protects function call from any exception popping,
+        On success returns function result wrapped in ok
+        On exception returns error wrapped in err"""
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs) -> Result[R, Err]:
+            return pacify_call_result(lambda: func(*args, **kwargs))
+        return wrapper
+    return pacify_callable_result
 
