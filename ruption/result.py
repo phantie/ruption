@@ -182,6 +182,14 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns result of calling default on value if err
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.or_else
+    @abstractmethod
+    def or_else(self, fn: Callable[[Err], Result[Ok, R]]) -> Result[Ok, R]:
+        """
+            returns ok value if ok
+            returns result of calling fn on value if err
+        """
+
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
         self.T = value
@@ -247,6 +255,9 @@ class ok(Result[Ok, Err]):
 
     def map_or_else(self, default: Callable[[Err], R], fn: Callable[[Ok], R]) -> R:
         return fn(self.unwrap())
+    
+    def or_else(self, fn: Callable[[Err], Result[Ok, R]]) -> Result[Ok, R]:
+        return self
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -312,5 +323,8 @@ class err(Result[Ok, Err]):
     
     def map_or_else(self, default: Callable[[Err], R], fn: Callable[[Ok], R]) -> R:
         return default(self.unwrap_err())
+    
+    def or_else(self, fn: Callable[[Err], Result[Ok, R]]) -> Result[Ok, R]:
+        return fn(self.unwrap_err())
 
 from .option import Option, some, none
