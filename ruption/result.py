@@ -166,6 +166,13 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns false otherwise
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map_or
+    @abstractmethod
+    def map_or(self, default: R, fn: Callable[[Ok], R]) -> R:
+        """
+            returns value transformed with fn if some
+            returns default if none
+        """
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -226,6 +233,9 @@ class ok(Result[Ok, Err]):
     
     def is_err_and(self, fn: Callable[[Err], bool]) -> bool:
         return False
+    
+    def map_or(self, default: R, fn: Callable[[Ok], R]) -> R:
+        return fn(self.unwrap())
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -285,5 +295,8 @@ class err(Result[Ok, Err]):
 
     def is_err_and(self, fn: Callable[[Err], bool]) -> bool:
         return fn(self.unwrap_err())
+
+    def map_or(self, default: R, fn: Callable[[Ok], R]) -> R:
+        return default
 
 from .option import Option, some, none
