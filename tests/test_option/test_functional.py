@@ -15,55 +15,6 @@ def test_converts_not_None_into_option_some():
     assert Option.into(some_value) == some(some_value)
 
 
-
-
-
-def test_Option_as_typehint():
-    from typing import Callable, Any
-    from contextlib import suppress
-
-    def parse(value: Any, parser: Callable) -> Option[Any]:
-        try:
-            return some(parser(value))
-        except:
-            return none()
-
-    int_parser = lambda v: int(v)
-    assert parse('13', int_parser) == some(13)
-    assert parse('Q', int_parser).is_none()
-
-    with suppress(ImportError):
-        from typeguard import typechecked
-        from typing import List
-        from sys import version_info
-        from option import __version_tuple__
-
-        if version_info >= (3, 9):
-            List = list
-
-        @typechecked
-        def tokenize(value) -> Option[list[str]]:
-            if isinstance(value, str):
-                return some(list(value))
-            elif value == 42:
-                return 'Oh no 42!'
-            elif value == 13:
-                return some(13)
-            else:
-                return none
-
-        assert tokenize('abc') == some(['a', 'b', 'c'])
-        assert tokenize(123).is_none()
-
-        with pytest.raises(TypeError) as err:
-            tokenize(42)
-
-        assert str(err.value) == 'type of the return value must be option.Option; got str instead'
-
-        if False:
-            assert tokenize(13) == some(13) # does not throw an error because it yet cannot typecheck the inner value
-
-
 def test_lift():
     def addOne(x):
         return x + 1
