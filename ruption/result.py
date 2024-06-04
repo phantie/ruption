@@ -27,7 +27,11 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
 
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map
     @abstractmethod
-    def map(self, fn: Callable[[Ok], R]) -> Result[R, Err]: ...
+    def map(self, fn: Callable[[Ok], R]) -> Result[R, Err]:
+        """
+            returns ok value transformed with fn if some
+            returns none if none
+        """
     
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.is_ok
     @abstractmethod
@@ -84,6 +88,14 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns result of fn calling on error if err
         """
 
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.map_err
+    @abstractmethod
+    def map_err(self, fn: Callable[[Err], R]) -> Result[Ok, R]:
+        """
+            returns ok value if some
+            returns err result of fn calling on error if err
+        """
+
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
         self.T = value
@@ -114,6 +126,9 @@ class ok(Result[Ok, Err]):
 
     def unwrap_or_else(self, fn: Callable[[Err], Ok]) -> Ok:
         return self.unwrap()
+    
+    def map_err(self, fn: Callable[[Err], R]) -> Result[Ok, R]:
+        return self
 
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
@@ -145,5 +160,8 @@ class err(Result[Ok, Err]):
     
     def unwrap_or_else(self, fn: Callable[[Err], Ok]) -> Ok:
         return fn(self.unwrap_err())
+
+    def map_err(self, fn: Callable[[Err], R]) -> Result[Ok, R]:
+        return err(fn(self.unwrap_err()))
 
 from .option import Option, some, none
