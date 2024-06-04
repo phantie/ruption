@@ -16,6 +16,9 @@ Err = TypeVar("Err")
 R = TypeVar("R")
 
 class Result(Generic[Ok, Err], metaclass=ABCMeta):
+    def __eq__(self, another):
+        return isinstance(another, self.__class__) and self.T == another.T
+
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap
     @abstractmethod
     def unwrap(self) -> Ok:
@@ -129,6 +132,16 @@ class Result(Generic[Ok, Err], metaclass=ABCMeta):
             returns true if ok and result of fn calling on value is true
             returns false otherwise
         """
+    
+    # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.flatten
+    @abstractmethod
+    def flatten(self) -> Result[Ok, Err]:
+        """
+            returns 
+            returns err value if err
+        """
+
+
 
 class ok(Result[Ok, Err]):
     def __init__(self, value: Ok):
@@ -177,6 +190,17 @@ class ok(Result[Ok, Err]):
     def is_ok_and(self, fn: Callable[[Ok], bool]) -> bool:
         return fn(self.unwrap())
 
+    def flatten(self, safe = False) -> Result[Ok, Err]:
+        # originally you would not be able to call flatten if self was not Result[Result[Ok, Err], Err]
+        # here a safe parameter is introduced as experiment
+        if safe:
+            if isinstance(self.unwrap(), ok):
+                return self.unwrap()
+            else:
+                return self
+        else:
+            return self.unwrap()
+
 class err(Result[Ok, Err]):
     def __init__(self, value: Err):
         self.T = value
@@ -223,5 +247,8 @@ class err(Result[Ok, Err]):
 
     def is_ok_and(self, fn: Callable[[Ok], bool]) -> bool:
         return False
+
+    def flatten(self) -> Result[Ok, Err]:
+        return self
 
 from .option import Option, some, none

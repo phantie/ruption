@@ -200,6 +200,8 @@ class Option(Generic[I], metaclass=ABCMeta):
 
         return wrap
 
+    def __eq__(self, another):
+        return isinstance(another, self.__class__) and self.T == another.T
 
 class some(Option[I]):
     def __init__(self, value: I):
@@ -235,9 +237,6 @@ class some(Option[I]):
             returns true if inner value equals to cmp
         """
         return self.T == cmp
-
-    def __eq__(self, another):
-        return isinstance(another, self.__class__) and self.T == another.T
 
     def unwrap_or_else(self, fn: Callable[[], I]) -> I:
         """
@@ -373,9 +372,6 @@ class none(Option[I]):
             returns false
         """
         return False
-
-    def __eq__(self, another):
-        return self is another
 
     def unwrap_or_else(self, fn: Callable[[], I]) -> I:
         """
