@@ -124,46 +124,6 @@ def test_flatten():
     assert none().flatten(13).is_none()
 
 
-def test_also():
-    x = some(2)
-    y = none()
-
-    assert x.also(y).is_none()
-
-    x = none()
-    y = some('foo')
-
-    assert x.also(y).is_none()
-
-    x = some(2)
-    y = some(3)
-
-    assert x.also(y) == some(3)
-
-    x = y = none()
-
-    assert x.also(y).is_none()
-
-def test__and():
-    x = some(2)
-    y = none()
-
-    assert x._and(y).is_none()
-
-    x = none()
-    y = some('foo')
-
-    assert x._and(y).is_none()
-
-    x = some(2)
-    y = some(3)
-
-    assert x._and(y) == some(3)
-
-    x = y = none()
-
-    assert x._and(y).is_none()
-
 def test_expect():
     assert some(1).expect('cannot fail') == 1
 

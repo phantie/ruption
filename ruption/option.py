@@ -88,12 +88,14 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns iterator yielding inner value once if some
             returns empty iterator if none
         """
-    
-    @abstractmethod
-    def also(self, another: Option) -> Option: ...
 
-    def _and(self, another: Option) -> Option:
-        return self.also(another)
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.and
+    @abstractmethod
+    def and_(self, another: Option[R]) -> Option[R]:
+        """
+            returns none if none
+            returns another otherwise
+        """
 
     # TODO write tests
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.and_then
@@ -240,7 +242,7 @@ class some(Option[I]):
         """
         return [self.unwrap()].__iter__()
 
-    def also(self, another):
+    def and_(self, another: Option[R]) -> Option[R]:
         return another
 
     def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:
@@ -358,8 +360,8 @@ class none(Option[I]):
             returns empty iterator
         """
         return [].__iter__()
-
-    def also(self, another):
+    
+    def and_(self, another: Option[R]) -> Option[R]:
         return none()
 
     def and_then(self, fn: Callable[[I], Option[R]]) -> Option[R]:

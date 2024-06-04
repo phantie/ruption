@@ -5,11 +5,6 @@ A step towards writing more reliable software in python.
 Methods not suitable for python, regarding pointers, immutability, etc - are not implemented.
 
 Due to "None" being reserved, "Some and None" are renamed to "some and none".
-
-Renamed methods:
-
-    and: also / _and
-    or: otherwise / _or
     
 Install:
     
