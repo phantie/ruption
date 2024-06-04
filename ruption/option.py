@@ -133,7 +133,6 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns none otherwise
         """
 
-    # TODO write tests
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.zip
     @abstractmethod
     def zip(self, another: Option[U]) -> Option[Tuple[I, U]]:

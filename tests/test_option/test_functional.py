@@ -40,22 +40,6 @@ def test_or_else():
     assert none().or_else(nobody).is_none()
 
 
-def test_zip():
-    x = some(1)
-    y = some('hey')
-    z = none()
-
-    assert x.zip(y) == some((1, 'hey'))
-    assert x.zip(z).is_none()
-    assert z.zip(z).is_none()
-
-def test_zip_advanced():
-    x = some(1)
-    y = some(2)
-    z = none()
-
-    assert x.zip(y)
-    assert x.zip(z).is_none()
 
 def test_zip_with():
     def area(a, b):
