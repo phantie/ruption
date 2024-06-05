@@ -4,6 +4,7 @@ from typing import Callable, TypeVar
 import functools
 from .option import some, none, Option
 from .result import ok, err, Result, Err
+from .panic import Panic
 
 __all__ = [
     "pacify_call",
@@ -27,6 +28,9 @@ def log_fn(e) -> None:
 def pacify_call(fn: Callable[[], R], *, log = True, log_fn = log_fn) -> Option[R]:
     try:
         return some(fn())
+    except Panic:
+        # only Panics and BaseExceptions not get caught
+        raise
     except Exception as e:
         if log:
             log_fn(e)
@@ -53,6 +57,9 @@ def pacify_callable(
 def pacify_call_result(fn: Callable[[], R]) -> Result[R, Err]:
     try:
         return ok(fn())
+    except Panic:
+        # only Panics and BaseExceptions not get caught
+        raise
     except Exception as e:
         return err(e)
 
