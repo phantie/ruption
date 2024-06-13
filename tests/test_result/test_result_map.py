@@ -24,3 +24,7 @@ def test_err_map():
     import pytest
     with pytest.raises(Panic) as e:
         assert err(1).map(lambda x: x * 2).unwrap()
+
+
+def test_map_class_method_form():
+    assert Result.map(ok(1), lambda x: x * 2).unwrap() == 2

@@ -13,3 +13,6 @@ def test_ok_flatten():
 
 def test_err_flatten():
     assert err(VALUE).flatten() == err(VALUE)
+
+def test_flatten_class_method_form():
+    assert Result.flatten(err(VALUE)) == err(VALUE)
