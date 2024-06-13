@@ -7,3 +7,7 @@ def test_ok_ok():
 
 def test_err_ok():
     err(VALUE).ok().is_none()
+
+
+def test_ok_class_method_form():
+    assert Result.ok(ok(VALUE)) == some(VALUE)

@@ -12,3 +12,7 @@ def test_ok_expect_err():
 
 def test_err_expect_err():
     assert err(VALUE).expect_err("") == VALUE
+
+
+def test_expect_err_class_method_form():
+    assert Result.expect_err(err(VALUE), "") == VALUE

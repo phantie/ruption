@@ -7,3 +7,7 @@ def test_ok_iter():
 
 def test_err_iter():
     assert list(err(VALUE).iter()) == []
+
+
+def test_iter_class_method_form():
+    assert list(Result.iter(ok(VALUE))) == [VALUE]
