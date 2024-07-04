@@ -17,3 +17,10 @@ def test_and_():
     x = y = none()
 
     assert x.and_(y).is_none()
+
+def test_and__class_method_form():
+    x = some(VALUE)
+    y = none()
+
+    assert Option.and_(x, y).is_none()
+    assert Option.and_(y, x).is_none()

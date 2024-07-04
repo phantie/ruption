@@ -22,3 +22,8 @@ def test_some_value_does_not_contain_other_value():
 
 def test_none_does_not_contain_value():
     assert not none().contains(VALUE)
+
+
+def test_contains_class_method_form():
+    assert Option.contains(some(VALUE), VALUE)
+

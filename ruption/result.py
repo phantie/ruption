@@ -1,9 +1,10 @@
 
 from __future__ import annotations
-from abc import abstractmethod, ABCMeta
+from abc import abstractmethod
 from typing import Callable, Iterator, Generic, NoReturn, TypeVar
 
 from .panic import Panic
+from ._class_method_form import ClassMethodFormMeta
 
 
 __all__ = ['Result', 'ok', 'err', 'Ok', 'Err']
@@ -14,38 +15,9 @@ Err = TypeVar("Err")
 R = TypeVar("R")
 
 
-class ResultMeta(ABCMeta):
-    """
-        Allows Class.method form useful in map/filter/etc
-
-        assert list(map(Result.unwrap, filter(Result.is_ok, [ok(123), err("")]))) == [123]
-    """
-
-    def __new__(mcls, name, bases, namespace):
-        # Create the new class
-        mcls._abstract_methods = []
-        cls = super().__new__(mcls, name, bases, namespace)
-
-        abstract_methods = {
-            name for name, value in namespace.items()
-            if getattr(value, "__isabstractmethod__", False)
-        }
-
-        cls._abstract_methods = abstract_methods
-
-        return cls
-
-    def __getattribute__(cls, name: str):
-        if name == "_abstract_methods" or name not in cls._abstract_methods:
-            return super().__getattribute__(name)
-
-        def dispatch_method(self, *args, **kwargs):
-            return getattr(self, name)(*args, **kwargs)
-        return dispatch_method
 
 
-
-class Result(Generic[Ok, Err], metaclass=ResultMeta):
+class Result(Generic[Ok, Err], metaclass=ClassMethodFormMeta):
     # https://doc.rust-lang.org/stable/std/result/enum.Result.html#method.unwrap
     @abstractmethod
     def unwrap(self) -> Ok:

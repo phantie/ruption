@@ -1,9 +1,11 @@
 
 from __future__ import annotations
-from abc import abstractmethod, ABCMeta
+from abc import abstractmethod
 from typing import Callable, Any, Iterator, Generic, Tuple, NoReturn, Literal, Callable, TypeVar
 
 from .panic import Panic
+from ._class_method_form import ClassMethodFormMeta
+
 
 
 __all__ = ['Option', 'some', 'none']
@@ -14,7 +16,7 @@ U = TypeVar('U')            # use with zip
 R = TypeVar('R')            # result
 
 
-class Option(Generic[I], metaclass=ABCMeta):
+class Option(Generic[I], metaclass=ClassMethodFormMeta):
     # https://doc.rust-lang.org/std/option/enum.Option.html#method.unwrap
     @abstractmethod
     def unwrap(self) -> I:
