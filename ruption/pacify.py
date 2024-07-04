@@ -1,6 +1,12 @@
 
 
-from typing import Callable, TypeVar, ParamSpec
+from typing import Callable, TypeVar
+
+try:
+    from typing import ParamSpec
+except ImportError:
+    from typing_extensions import ParamSpec
+
 import functools
 from .option import some, none, Option
 from .result import ok, err, Result, Err
