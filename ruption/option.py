@@ -195,12 +195,6 @@ class Option(Generic[I], metaclass=ABCMeta):
         """
 
     @classmethod
-    def into(cls, value):
-        if value is None: return none()
-        elif isinstance(value, some) or isinstance(value, none): return value
-        else: return some(value)
-
-    @classmethod
     def lift(cls, f: Callable[[Any], Any]) -> Callable[[some], some]:
         """
             def addOne(x):
