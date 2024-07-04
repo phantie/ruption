@@ -194,23 +194,6 @@ class Option(Generic[I], metaclass=ABCMeta):
             fn must not modify value
         """
 
-    @classmethod
-    def lift(cls, f: Callable[[Any], Any]) -> Callable[[some], some]:
-        """
-            def addOne(x):
-                return x + 1
-
-            addOneToOption = Option.lift(addOne)
-
-            assert addOneToOption(Some(1)) == Some(2)
-        """
-        from functools import wraps
-
-        @wraps(f)
-        def wrap(s: some):
-            return some(f(s.unwrap()))
-
-        return wrap
 
 class some(Option[I]):
     def __init__(self, value: I):
