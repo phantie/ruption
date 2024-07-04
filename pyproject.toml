@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ruption"
-version = "2.2.0"
+version = "2.2.1"
 description = "Impl subset of Rust's Option/Result and utilities with good type hinting"
 authors = ["phantie <funtom1605@gmail.com>"]
 license = "MIT"
