@@ -185,6 +185,15 @@ class Option(Generic[I], metaclass=ABCMeta):
             returns err error if none
         """
 
+    # https://doc.rust-lang.org/std/option/enum.Option.html#method.inspect
+    @abstractmethod
+    def inspect(self, fn: Callable[[I], None]) -> Option[I]:
+        """
+            calls fn on value if some
+            returns unmodified value
+            fn must not modify value
+        """
+
     @classmethod
     def into(cls, value):
         if value is None: return none()
@@ -323,6 +332,9 @@ class some(Option[I]):
     def ok_or(self, error: Err) -> Result[I, Err]:
         return ok(self.unwrap())
 
+    def inspect(self, fn: Callable[[I], None]) -> Option[I]:
+        fn(self.unwrap())
+        return self
 
 class none(Option[I]):
     def __bool__(self):
@@ -427,6 +439,9 @@ class none(Option[I]):
     
     def ok_or(self, error: Err) -> Result[I, Err]:
         return err(error)
+
+    def inspect(self, fn: Callable[[I], None]) -> Option[I]:
+        return self
 
 
 from .result import Result, Ok, Err, ok, err
