@@ -17,22 +17,41 @@ __all__ = [
     "pacify_callable",
     "pacify_call_result",
     "pacify_callable_result",
+    "exc_trace",
 ]
 
 
 R = TypeVar('R')
 P = ParamSpec("P")
 
+
+def exc_trace(e: BaseException) -> str:
+    """
+    Extracts trace from an exception to str
+    Useful in inspect_err before unwrap or expect to log trace,
+        since without it you only see Panic's stack trace 
+
+    Example:
+    '''python    
+    from ruption.pacify import pacify_call_result
+    pacify_call_result(lambda: 1/0).inspect_err(lambda e: print(exc_trace(e))).unwrap()
+    '''
+    """
+    from traceback import format_exception
+    return "".join(format_exception(e))
+
+
 def log_fn(e) -> None:
+
     global logger
     try:
         logger
     except NameError:
         ...
     else:
-        logger.exception(f"Swallowed: {e}")
+        logger.exception(exc_trace(e))
 
-def pacify_call(fn: Callable[[], R], *, log = True, log_fn = log_fn) -> Option[R]:
+def pacify_call(fn: Callable[[], R], *, log = False, log_fn = log_fn) -> Option[R]:
     try:
         return some(fn())
     except Panic:
@@ -76,7 +95,7 @@ def pacify_callable_result() \
 
     def pacify_callable_result(func: Callable[P, R]) -> Callable[P, Result[R, Err]]:
         """Protects function call from any exception popping,
-        On success returns fun/ction result wrapped in ok
+        On success returns function result wrapped in ok
         On exception returns error wrapped in err"""
 
         @functools.wraps(func)
