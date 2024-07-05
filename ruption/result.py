@@ -5,6 +5,7 @@ from typing import Callable, Iterator, Generic, NoReturn, TypeVar
 
 from .panic import Panic
 from ._class_method_form import ClassMethodFormMeta
+from .panic import _panic
 
 
 __all__ = ['Result', 'ok', 'err', 'Ok', 'Err']
@@ -282,7 +283,7 @@ class err(Result[Ok, Err]):
         return isinstance(another, self.__class__) and self.unwrap_err() == another.unwrap_err()
 
     def unwrap(self) -> NoReturn:
-        raise Panic("called .unwrap() on err")
+        _panic(self.T, "called .unwrap() on err")
 
     def map(self, fn: Callable[[Ok], R]) -> Result[R, Err]:
         return self
@@ -297,7 +298,7 @@ class err(Result[Ok, Err]):
         return self.T
 
     def expect(self, msg: str) -> Ok:
-        raise Panic(msg)
+        _panic(self.T, msg)
 
     def ok(self) -> Option[Ok]:
         return none()

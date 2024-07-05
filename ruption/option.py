@@ -5,6 +5,7 @@ from typing import Callable, Any, Iterator, Generic, Tuple, NoReturn, Literal, C
 
 from .panic import Panic
 from ._class_method_form import ClassMethodFormMeta
+from .panic import _panic
 
 
 
@@ -330,7 +331,7 @@ class none(Option[I]):
 
     def unwrap(self) -> NoReturn:
         """panics"""
-        raise Panic('called `Option.unwrap()` on a `none` value')
+        _panic(None, "called `Option.unwrap()` on a `none` value")
 
     def unwrap_or(self, default: I) -> I:
         return default
@@ -411,7 +412,7 @@ class none(Option[I]):
         return none()
 
     def expect(self, msg: str) -> I:
-        raise Panic(msg)
+        _panic(None, msg)
 
     def flatten(self) -> Option[I]:
         return none()
