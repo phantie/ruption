@@ -8,6 +8,7 @@ except ImportError:
     from typing_extensions import ParamSpec
 
 import functools
+import sys
 from .option import some, none, Option
 from .result import ok, err, Result, Err
 from .panic import Panic
@@ -38,7 +39,11 @@ def exc_trace(e: BaseException) -> str:
     '''
     """
     from traceback import format_exception
-    return "".join(format_exception(e))
+    if sys.version_info >= (3, 10):
+        return "".join(format_exception(e))
+    else:
+        exc_type, exc_value, tb = type(e), e, e.__traceback__
+        return "".join(format_exception(exc_type, exc_value, tb))
 
 
 def log_fn(e) -> None:
